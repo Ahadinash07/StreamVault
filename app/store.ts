@@ -12,6 +12,7 @@ import achievementsReducer from './features/achievements/achievementsSlice'
 import themeReducer from './features/theme/themeSlice'
 import reelsReducer from './features/reels/reelsSlice'
 import settingsReducer from './features/settings/settingsSlice'
+import notificationsReducer from './features/notifications/notificationsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ export const store = configureStore({
     theme: themeReducer,
     reels: reelsReducer,
     settings: settingsReducer,
+    notifications: notificationsReducer,
   },
 })
 

@@ -30,12 +30,22 @@ export interface Activity {
   id: string
   userId: string
   userName: string
-  userAvatar: string
-  type: 'watched' | 'reviewed' | 'favorited' | 'added_to_watchlist'
-  contentId: string
+  userAvatar?: string
+  type: 'watched' | 'reviewed' | 'favorited' | 'added_to_watchlist' | 'posted'
+  contentId?: string
   contentTitle: string
   contentType: 'movie' | 'series'
   timestamp: string
+  message?: string
+}
+
+export interface Message {
+  id: string
+  fromId: string
+  toId: string
+  content: string
+  timestamp: string
+  isRead: boolean
 }
 
 interface SocialState {
@@ -43,6 +53,7 @@ interface SocialState {
   reviews: Record<string, Review[]>
   activities: Activity[]
   watchParties: WatchParty[]
+  messages: Record<string, Message[]> // conversationId -> messages
 }
 
 export interface WatchParty {
@@ -59,6 +70,8 @@ export interface WatchParty {
   currentTime: number
   isPlaying: boolean
   createdAt: string
+  scheduledTime?: string
+  maxParticipants?: number
 }
 
 const initialState: SocialState = {
@@ -66,6 +79,7 @@ const initialState: SocialState = {
   reviews: {},
   activities: [],
   watchParties: [],
+  messages: {},
 }
 
 const socialSlice = createSlice({
@@ -126,6 +140,22 @@ const socialSlice = createSlice({
         party.participants = party.participants.filter((id) => id !== action.payload.userId)
       }
     },
+    sendMessage: (state, action: PayloadAction<Message>) => {
+      const conversationId = [action.payload.fromId, action.payload.toId].sort().join('-')
+      if (!state.messages[conversationId]) {
+        state.messages[conversationId] = []
+      }
+      state.messages[conversationId].push(action.payload)
+    },
+    markMessageAsRead: (state, action: PayloadAction<{ messageId: string; conversationId: string }>) => {
+      const messages = state.messages[action.payload.conversationId]
+      if (messages) {
+        const message = messages.find((m) => m.id === action.payload.messageId)
+        if (message) {
+          message.isRead = true
+        }
+      }
+    },
   },
 })
 
@@ -140,6 +170,8 @@ export const {
   updateWatchParty,
   joinWatchParty,
   leaveWatchParty,
+  sendMessage,
+  markMessageAsRead,
 } = socialSlice.actions
 
 export default socialSlice.reducer

@@ -4,38 +4,38 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  FiSearch, 
-  FiBell, 
-  FiMenu, 
-  FiX, 
-  FiUser,
-  FiHome,
-  FiFilm,
-  FiTv,
-  FiList,
-  FiLogOut,
-  FiSettings,
-  FiPlay
-} from 'react-icons/fi'
+import dynamic from 'next/dynamic'
 import { useAppSelector, useAppDispatch } from '@/app/hooks'
 import { setShowSuggestions, setQuery } from '@/app/features/search/searchSlice'
 import { logout } from '@/app/features/user/userSlice'
 import { saveToLocalStorage } from '@/utils/localStorage'
 import ThemeToggle from './ThemeToggle'
 
+// Dynamically import icons with SSR disabled to prevent hydration mismatches
+const FiSearch = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiSearch })), { ssr: false })
+const FiBell = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiBell })), { ssr: false })
+const FiMenu = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiMenu })), { ssr: false })
+const FiX = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiX })), { ssr: false })
+const FiUser = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiUser })), { ssr: false })
+const FiHome = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiHome })), { ssr: false })
+const FiFilm = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiFilm })), { ssr: false })
+const FiTv = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiTv })), { ssr: false })
+const FiList = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiList })), { ssr: false })
+const FiLogOut = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiLogOut })), { ssr: false })
+const FiSettings = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiSettings })), { ssr: false })
+const FiPlay = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiPlay })), { ssr: false })
+
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const dispatch = useAppDispatch()
   const { isAuthenticated, user } = useAppSelector((state) => state.user)
   const { query } = useAppSelector((state) => state.search)
+  const { unreadCount } = useAppSelector((state) => state.notifications)
 
   useEffect(() => {
-    setMounted(true)
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
     }
@@ -106,15 +106,22 @@ export default function Header() {
             </Link>
 
             {/* Notifications */}
-            {mounted && isAuthenticated && (
-              <button className="p-2 rounded-full hover:bg-white/10 transition-colors relative">
+            {isAuthenticated && (
+              <Link
+                href="/notifications"
+                className="p-2 rounded-full hover:bg-white/10 transition-colors relative"
+              >
                 <FiBell className="w-5 h-5 md:w-6 md:h-6" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
+              </Link>
             )}
 
             {/* Profile Menu */}
-            {mounted && isAuthenticated ? (
+            {isAuthenticated ? (
               <div className="relative">
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
