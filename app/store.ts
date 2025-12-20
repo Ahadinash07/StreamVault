@@ -14,6 +14,8 @@ import reelsReducer from './features/reels/reelsSlice'
 import settingsReducer from './features/settings/settingsSlice'
 import notificationsReducer from './features/notifications/notificationsSlice'
 import gamingReducer from './features/gaming/gamingSlice'
+import contentReducer from './features/content/contentSlice'
+import contentSectionsReducer from './features/contentSections/contentSectionsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +28,8 @@ export const store = configureStore({
     watchProgress: watchProgressReducer,
     social: socialReducer,
     recommendations: recommendationsReducer,
+    content: contentReducer,
+    contentSections: contentSectionsReducer,
     achievements: achievementsReducer,
     theme: themeReducer,
     reels: reelsReducer,
