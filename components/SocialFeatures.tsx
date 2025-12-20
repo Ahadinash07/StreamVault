@@ -77,8 +77,10 @@ export default function SocialFeatures({ contentId, contentType }: SocialFeature
         isPlaying: false,
         createdAt: new Date().toISOString(),
         scheduledTime: watchPartyForm.scheduledTime || new Date().toISOString(),
-        maxParticipants: watchPartyForm.maxParticipants
+        maxParticipants: watchPartyForm.maxParticipants,
+        messages: []
       }))
+
       setShowCreateWatchParty(false)
       setWatchPartyForm({
         contentTitle: '',

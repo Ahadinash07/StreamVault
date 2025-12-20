@@ -24,11 +24,17 @@ const FiList = dynamic(() => import('react-icons/fi').then(mod => ({ default: mo
 const FiLogOut = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiLogOut })), { ssr: false })
 const FiSettings = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiSettings })), { ssr: false })
 const FiPlay = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiPlay })), { ssr: false })
+const FiCompass = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiCompass })), { ssr: false })
+const FiGamepad2 = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiPlay })), { ssr: false })
+const FiClock = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiClock })), { ssr: false })
+const FiUsers = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiUsers })), { ssr: false })
+const FiMoreVertical = dynamic(() => import('react-icons/fi').then(mod => ({ default: mod.FiMoreVertical })), { ssr: false })
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false)
   const pathname = usePathname()
   const dispatch = useAppDispatch()
   const { isAuthenticated, user } = useAppSelector((state) => state.user)
@@ -43,6 +49,19 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMoreMenuOpen && !(event.target as Element).closest('.more-menu')) {
+        setIsMoreMenuOpen(false)
+      }
+      if (isProfileMenuOpen && !(event.target as Element).closest('.profile-menu')) {
+        setIsProfileMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isMoreMenuOpen, isProfileMenuOpen])
+
   const handleLogout = () => {
     dispatch(logout())
     saveToLocalStorage('user', null)
@@ -51,10 +70,17 @@ export default function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home', icon: FiHome },
+    { href: '/discover', label: 'Discover', icon: FiCompass },
     { href: '/movies', label: 'Movies', icon: FiFilm },
     { href: '/series', label: 'Series', icon: FiTv },
-    { href: '/reels', label: 'Reels', icon: FiPlay },
+    { href: '/gaming', label: 'Gaming', icon: FiGamepad2 },
     { href: '/my-list', label: 'My List', icon: FiList },
+  ]
+
+  const moreLinks = [
+    { href: '/reels', label: 'Reels', icon: FiPlay },
+    { href: '/perfect-for-right-now', label: 'Perfect for Right Now', icon: FiClock },
+    { href: '/watch-party', label: 'Watch Party', icon: FiUsers },
   ]
 
   return (
@@ -68,12 +94,12 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              StreamVault
+              Aurora Play
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6">
+          <nav className="hidden lg:flex items-center space-x-4">
             {navLinks.map((link) => {
               const Icon = link.icon
               const isActive = pathname === link.href
@@ -81,10 +107,10 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors ${
+                  className={`flex items-center space-x-1 px-2 py-2 rounded-md transition-colors text-sm ${
                     isActive
-                      ? 'text-blue-400 font-semibold'
-                      : 'text-gray-300 hover:text-white'
+                      ? 'text-blue-400 font-semibold bg-blue-400/10'
+                      : 'text-gray-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -92,6 +118,48 @@ export default function Header() {
                 </Link>
               )
             })}
+            
+            {/* More Menu */}
+            <div className="relative more-menu">
+              <button
+                onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+                className="flex items-center space-x-1 px-2 py-2 rounded-md transition-colors text-sm text-gray-300 hover:text-white hover:bg-white/5"
+              >
+                <FiMoreVertical className="w-4 h-4" />
+                <span>More</span>
+              </button>
+              
+              <AnimatePresence>
+                {isMoreMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full mt-2 w-56 bg-dark-100 rounded-lg shadow-xl border border-dark-200 overflow-hidden z-50"
+                  >
+                    {moreLinks.map((link) => {
+                      const Icon = link.icon
+                      const isActive = pathname === link.href
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsMoreMenuOpen(false)}
+                          className={`flex items-center space-x-3 px-4 py-3 transition-colors ${
+                            isActive
+                              ? 'bg-blue-600 text-white'
+                              : 'text-gray-300 hover:bg-dark-200'
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                          <span>{link.label}</span>
+                        </Link>
+                      )
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </nav>
 
           {/* Right Side Actions */}
@@ -122,7 +190,7 @@ export default function Header() {
 
             {/* Profile Menu */}
             {isAuthenticated ? (
-              <div className="relative">
+              <div className="relative profile-menu">
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                   className="flex items-center space-x-2 p-1 rounded-full hover:bg-white/10 transition-colors"
@@ -229,6 +297,32 @@ export default function Header() {
                   </Link>
                 )
               })}
+              
+              {/* More Links Section */}
+              <div className="pt-2 border-t border-dark-200 mt-4">
+                <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  More
+                </div>
+                {moreLinks.map((link) => {
+                  const Icon = link.icon
+                  const isActive = pathname === link.href
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-md transition-colors ${
+                        isActive
+                          ? 'bg-blue-600 text-white'
+                          : 'text-gray-300 hover:bg-white/10'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span>{link.label}</span>
+                    </Link>
+                  )
+                })}
+              </div>
             </nav>
           </motion.div>
         )}

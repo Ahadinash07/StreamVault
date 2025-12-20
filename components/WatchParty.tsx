@@ -41,6 +41,7 @@ export default function WatchParty({ content, episodeId, seasonId, onClose }: Wa
         currentTime: 0,
         isPlaying: false,
         createdAt: new Date().toISOString(),
+        messages: []
       }
       
       dispatch(createWatchParty(party))

@@ -48,6 +48,14 @@ export interface Message {
   isRead: boolean
 }
 
+export interface WatchPartyMessage {
+  id: string
+  userId: string
+  userName: string
+  content: string
+  timestamp: string
+}
+
 interface SocialState {
   friends: Friend[]
   reviews: Record<string, Review[]>
@@ -72,6 +80,7 @@ export interface WatchParty {
   createdAt: string
   scheduledTime?: string
   maxParticipants?: number
+  messages: WatchPartyMessage[]
 }
 
 const initialState: SocialState = {
@@ -140,6 +149,15 @@ const socialSlice = createSlice({
         party.participants = party.participants.filter((id) => id !== action.payload.userId)
       }
     },
+    addWatchPartyMessage: (state, action: PayloadAction<{ partyId: string; message: WatchPartyMessage }>) => {
+      const party = state.watchParties.find((p) => p.id === action.payload.partyId)
+      if (party) {
+        if (!party.messages) {
+          party.messages = []
+        }
+        party.messages.push(action.payload.message)
+      }
+    },
     sendMessage: (state, action: PayloadAction<Message>) => {
       const conversationId = [action.payload.fromId, action.payload.toId].sort().join('-')
       if (!state.messages[conversationId]) {
@@ -170,6 +188,7 @@ export const {
   updateWatchParty,
   joinWatchParty,
   leaveWatchParty,
+  addWatchPartyMessage,
   sendMessage,
   markMessageAsRead,
 } = socialSlice.actions
