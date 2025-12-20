@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ContentRow from '@/components/ContentRow'
 import { useAppSelector, useAppDispatch } from '../hooks'
 import { setGenres, setYear, setRating, setSortBy, clearFilters, toggleGenre, setShowFilters } from '../features/filters/filterSlice'
 import { FiFilter, FiX } from 'react-icons/fi'
@@ -194,7 +194,51 @@ export default function SeriesPage() {
               Showing {filteredSeries.length} {filteredSeries.length === 1 ? 'series' : 'series'}
             </p>
             {filteredSeries.length > 0 ? (
-              <ContentRow title="" items={filteredSeries} type="series" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+                {filteredSeries.map((series, index) => (
+                  <div key={series.id} className="group">
+                    <Link href={`/series/${series.id}`}>
+                      <div className="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 bg-dark-100">
+                        <img
+                          src={series.poster}
+                          alt={series.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <p className="text-white text-sm font-semibold line-clamp-2">{series.title}</p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="text-xs text-gray-300">
+                              {new Date(series.releaseDate).getFullYear()}
+                            </span>
+                            <span className="text-xs text-yellow-400">★ {series.rating.toFixed(1)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    <div className="space-y-1">
+                      <h3 className="text-white font-medium text-sm line-clamp-2 group-hover:text-blue-400 transition-colors">
+                        {series.title}
+                      </h3>
+                      <div className="flex items-center justify-between text-xs text-gray-400">
+                        <span>{new Date(series.releaseDate).getFullYear()}</span>
+                        <span className="text-yellow-400">★ {series.rating.toFixed(1)}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {series.genres.slice(0, 2).map((genre) => (
+                          <span
+                            key={genre}
+                            className="px-2 py-1 bg-dark-200 text-gray-300 text-xs rounded-full"
+                          >
+                            {genre}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : (
               <div className="text-center py-12">
                 <p className="text-gray-400 text-lg">No series found matching your filters.</p>

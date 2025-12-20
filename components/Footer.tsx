@@ -28,6 +28,7 @@ export default function Footer() {
       { label: 'TV Shows', href: '/series' },
       { label: 'Originals', href: '/originals' },
       { label: 'New & Popular', href: '/new' },
+      { label: 'Reels', href: '/reels' },
     ],
   }
 

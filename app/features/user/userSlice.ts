@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { saveUserData, loadUserData, clearUserData } from '@/utils/userPersistence'
 
-interface User {
+export interface User {
   id: string
   name: string
   email: string
@@ -12,7 +13,7 @@ interface User {
   currentProfile: string
 }
 
-interface UserProfile {
+export interface UserProfile {
   id: string
   name: string
   avatar: string
@@ -45,14 +46,21 @@ const userSlice = createSlice({
       state.user = action.payload
       state.isAuthenticated = true
       state.error = null
+      // Save user data to localStorage
+      saveUserData(action.payload)
     },
     logout: (state) => {
+      if (state.user) {
+        clearUserData(state.user.id)
+      }
       state.user = null
       state.isAuthenticated = false
     },
     addToFavorites: (state, action: PayloadAction<string>) => {
       if (state.user && !state.user.favorites.includes(action.payload)) {
         state.user.favorites.push(action.payload)
+        // Save to localStorage
+        saveUserData(state.user)
       }
     },
     removeFromFavorites: (state, action: PayloadAction<string>) => {
@@ -60,11 +68,15 @@ const userSlice = createSlice({
         state.user.favorites = state.user.favorites.filter(
           (id) => id !== action.payload
         )
+        // Save to localStorage
+        saveUserData(state.user)
       }
     },
     addToWatchlist: (state, action: PayloadAction<string>) => {
       if (state.user && !state.user.watchlist.includes(action.payload)) {
         state.user.watchlist.push(action.payload)
+        // Save to localStorage
+        saveUserData(state.user)
       }
     },
     removeFromWatchlist: (state, action: PayloadAction<string>) => {
@@ -72,6 +84,8 @@ const userSlice = createSlice({
         state.user.watchlist = state.user.watchlist.filter(
           (id) => id !== action.payload
         )
+        // Save to localStorage
+        saveUserData(state.user)
       }
     },
     addToWatchHistory: (state, action: PayloadAction<string>) => {
@@ -81,6 +95,8 @@ const userSlice = createSlice({
           if (state.user.watchHistory.length > 100) {
             state.user.watchHistory = state.user.watchHistory.slice(0, 100)
           }
+          // Save to localStorage
+          saveUserData(state.user)
         }
       }
     },
@@ -89,6 +105,20 @@ const userSlice = createSlice({
     },
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload
+    },
+    loadUserFromStorage: (state, action: PayloadAction<string>) => {
+      const userId = action.payload
+      const userData = loadUserData(userId)
+      if (userData) {
+        state.user = userData
+        state.isAuthenticated = true
+        state.error = null
+      }
+    },
+    saveUserToStorage: (state) => {
+      if (state.user) {
+        saveUserData(state.user)
+      }
     },
   },
 })
@@ -104,6 +134,8 @@ export const {
   addToWatchHistory,
   setLoading,
   setError,
+  loadUserFromStorage,
+  saveUserToStorage,
 } = userSlice.actions
 
 export default userSlice.reducer

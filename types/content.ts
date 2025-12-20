@@ -57,3 +57,108 @@ export interface Episode {
   videoUrl?: string
 }
 
+export interface Reel {
+  id: string
+  title: string
+  description: string
+  thumbnail: string
+  videoUrl: string
+  duration: number // in seconds
+  views: number
+  likes: number
+  shares: number
+  creator: string
+  tags: string[]
+  type: 'trailer' | 'behind-scenes' | 'clip' | 'teaser' | 'interview' | 'music-video' | 'short-film'
+  relatedContent?: {
+    type: 'movie' | 'series'
+    id: string
+    title: string
+  }
+  uploadDate: string
+  isTrending: boolean
+  isOriginal: boolean
+}
+
+export interface Theme {
+  mode: 'light' | 'dark' | 'system'
+}
+
+export interface MoodPlaylist {
+  id: string
+  name: string
+  description: string
+  emoji: string
+  color: string
+  content: (Movie | Series)[]
+  mood: 'happy' | 'sad' | 'excited' | 'relaxed' | 'adventurous' | 'romantic' | 'scary' | 'inspirational'
+}
+
+export interface SocialPost {
+  id: string
+  userId: string
+  username: string
+  avatar: string
+  content: string
+  type: 'review' | 'recommendation' | 'watch-party' | 'achievement' | 'poll'
+  timestamp: string
+  likes: number
+  comments: number
+  shares: number
+  media?: {
+    type: 'image' | 'video'
+    url: string
+    thumbnail?: string
+  }
+  relatedContent?: {
+    type: 'movie' | 'series' | 'reel'
+    id: string
+    title: string
+  }
+}
+
+export interface Poll {
+  id: string
+  question: string
+  options: {
+    id: string
+    text: string
+    votes: number
+  }[]
+  totalVotes: number
+  relatedContent?: {
+    type: 'movie' | 'series'
+    id: string
+    title: string
+  }
+  createdAt: string
+  endsAt: string
+  isActive: boolean
+}
+
+export interface WatchParty {
+  id: string
+  hostId: string
+  hostName: string
+  title: string
+  description: string
+  content: Movie | Series
+  scheduledTime: string
+  participants: {
+    id: string
+    name: string
+    avatar: string
+    joinedAt: string
+  }[]
+  maxParticipants: number
+  isLive: boolean
+  chatMessages: {
+    id: string
+    userId: string
+    username: string
+    message: string
+    timestamp: string
+    type: 'text' | 'emoji' | 'reaction'
+  }[]
+}
+

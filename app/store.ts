@@ -9,6 +9,9 @@ import watchProgressReducer from './features/user/watchProgressSlice'
 import socialReducer from './features/social/socialSlice'
 import recommendationsReducer from './features/recommendations/recommendationsSlice'
 import achievementsReducer from './features/achievements/achievementsSlice'
+import themeReducer from './features/theme/themeSlice'
+import reelsReducer from './features/reels/reelsSlice'
+import settingsReducer from './features/settings/settingsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +25,9 @@ export const store = configureStore({
     social: socialReducer,
     recommendations: recommendationsReducer,
     achievements: achievementsReducer,
+    theme: themeReducer,
+    reels: reelsReducer,
+    settings: settingsReducer,
   },
 })
 

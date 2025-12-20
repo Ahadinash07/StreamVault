@@ -7,8 +7,11 @@ import { mockMovies, mockSeries } from '@/data/mockData'
 import { loadFromLocalStorage } from '@/utils/localStorage'
 import { setMovies, setFeaturedMovie, setTrendingMovies, setTopRatedMovies, setNewReleases } from './features/movies/moviesSlice'
 import { setSeries, setFeaturedSeries, setTrendingSeries, setTopRatedSeries } from './features/series/seriesSlice'
-import { setUser } from './features/user/userSlice'
+import { setUser, loadUserFromStorage } from './features/user/userSlice'
 import { setSubscription } from './features/subscription/subscriptionSlice'
+import { loadProgressFromStorage } from './features/user/watchProgressSlice'
+import { loadSettingsFromStorage } from './features/settings/settingsSlice'
+import ThemeProvider from '@/components/ThemeProvider'
 
 // Initialize store with data
 if (typeof window !== 'undefined') {
@@ -24,10 +27,14 @@ if (typeof window !== 'undefined') {
   store.dispatch(setTrendingSeries(mockSeries.slice(0, 3)))
   store.dispatch(setTopRatedSeries(mockSeries.slice().sort((a, b) => b.rating - a.rating).slice(0, 3)))
 
-  // Load user data from localStorage
-  const savedUser = loadFromLocalStorage('user', null)
-  if (savedUser) {
+  // Load user data from localStorage (legacy support)
+  const savedUser = loadFromLocalStorage('user', null) as any
+  if (savedUser && savedUser.id) {
     store.dispatch(setUser(savedUser))
+    // Load user-specific data
+    store.dispatch(loadUserFromStorage(savedUser.id))
+    store.dispatch(loadProgressFromStorage(savedUser.id))
+    store.dispatch(loadSettingsFromStorage(savedUser.id))
   }
 
   // Load subscription data from localStorage
@@ -38,6 +45,12 @@ if (typeof window !== 'undefined') {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <Provider store={store}>{children}</Provider>
+  return (
+    <Provider store={store}>
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
+    </Provider>
+  )
 }
 

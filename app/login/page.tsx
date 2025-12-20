@@ -7,6 +7,8 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useAppDispatch } from '../hooks'
 import { login } from '../features/user/userSlice'
+import { loadProgressFromStorage } from '../features/user/watchProgressSlice'
+import { loadSettingsFromStorage } from '../features/settings/settingsSlice'
 import { saveToLocalStorage } from '@/utils/localStorage'
 import toast from 'react-hot-toast'
 
@@ -43,6 +45,11 @@ export default function LoginPage() {
 
       dispatch(login(user))
       saveToLocalStorage('user', user)
+      
+      // Load user-specific data from localStorage
+      dispatch(loadProgressFromStorage(user.id))
+      dispatch(loadSettingsFromStorage(user.id))
+      
       toast.success('Welcome back!')
       router.push('/')
       setLoading(false)

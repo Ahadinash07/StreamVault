@@ -14,12 +14,15 @@ import {
   FiFilm,
   FiTv,
   FiList,
-  FiLogOut
+  FiLogOut,
+  FiSettings,
+  FiPlay
 } from 'react-icons/fi'
 import { useAppSelector, useAppDispatch } from '@/app/hooks'
 import { setShowSuggestions, setQuery } from '@/app/features/search/searchSlice'
 import { logout } from '@/app/features/user/userSlice'
 import { saveToLocalStorage } from '@/utils/localStorage'
+import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -50,6 +53,7 @@ export default function Header() {
     { href: '/', label: 'Home', icon: FiHome },
     { href: '/movies', label: 'Movies', icon: FiFilm },
     { href: '/series', label: 'Series', icon: FiTv },
+    { href: '/reels', label: 'Reels', icon: FiPlay },
     { href: '/my-list', label: 'My List', icon: FiList },
   ]
 
@@ -138,6 +142,14 @@ export default function Header() {
                       >
                         <FiUser className="w-4 h-4" />
                         <span>Profile</span>
+                      </Link>
+                      <Link
+                        href="/settings"
+                        className="flex items-center space-x-2 px-4 py-3 hover:bg-dark-200 transition-colors"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                      >
+                        <FiSettings className="w-4 h-4" />
+                        <span>Settings</span>
                       </Link>
                       <Link
                         href="/subscription"
