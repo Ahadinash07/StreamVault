@@ -13,6 +13,7 @@ import themeReducer from './features/theme/themeSlice'
 import reelsReducer from './features/reels/reelsSlice'
 import settingsReducer from './features/settings/settingsSlice'
 import notificationsReducer from './features/notifications/notificationsSlice'
+import gamingReducer from './features/gaming/gamingSlice'
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ export const store = configureStore({
     reels: reelsReducer,
     settings: settingsReducer,
     notifications: notificationsReducer,
+    gaming: gamingReducer,
   },
 })
 
