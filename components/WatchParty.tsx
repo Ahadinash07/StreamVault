@@ -35,6 +35,7 @@ export default function WatchParty({ content, episodeId, seasonId, onClose }: Wa
         contentTitle: content.title,
         contentType: content.type,
         episodeId,
+        seasonId,
         participants: [user.id],
         isActive: true,
         currentTime: 0,

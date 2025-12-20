@@ -53,6 +53,7 @@ export interface WatchParty {
   contentTitle: string
   contentType: 'movie' | 'series'
   episodeId?: string
+  seasonId?: string
   participants: string[]
   isActive: boolean
   currentTime: number
