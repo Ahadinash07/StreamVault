@@ -7,7 +7,6 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/HeroSection'
 import ContentRow from '@/components/ContentRow'
-import ContinueWatching from '@/components/ContinueWatching'
 import MoodPlaylists from '@/components/MoodPlaylists'
 import Recommendations from '@/components/Recommendations'
 import Achievements from '@/components/Achievements'
@@ -809,8 +808,6 @@ export default function Home() {
               />
             )
           })}
-
-          <ContinueWatching />
           <MoodPlaylists />
           <Recommendations />
           <Achievements />

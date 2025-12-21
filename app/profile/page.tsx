@@ -84,9 +84,9 @@ export default function ProfilePage() {
               <h3 className="text-xl font-semibold mb-4">Subscription</h3>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-semibold capitalize">{subscription.plan} Plan</p>
+                  <p className="text-lg font-semibold capitalize">{subscription.planId} Plan</p>
                   <p className="text-gray-400 text-sm">
-                    Started: {new Date(subscription.startDate).toLocaleDateString()}
+                    Started: {new Date(subscription.currentPeriodStart).toLocaleDateString()}
                   </p>
                 </div>
                 <Link

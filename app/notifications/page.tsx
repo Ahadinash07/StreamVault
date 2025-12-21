@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAppSelector, useAppDispatch } from '../hooks'
-import { markAsRead, markAllAsRead, removeNotification, clearAllNotifications } from '../features/notifications/notificationsSlice'
+import { markAsRead, markAllAsRead, removeNotification, clearAllNotifications, setNotifications } from '../features/notifications/notificationsSlice'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import {
@@ -27,10 +27,161 @@ export default function NotificationsPage() {
   const { notifications, unreadCount } = useAppSelector((state) => state.notifications)
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
   const [selectedNotifications, setSelectedNotifications] = useState<string[]>([])
+  const notificationsLoadedRef = useRef(false)
+
+  console.log('NotificationsPage render - notifications:', notifications.length, 'unread:', unreadCount)
+
+  // Initialize notifications if not already loaded
+  useEffect(() => {
+    console.log('useEffect running, notifications length:', notifications.length, 'loaded:', notificationsLoadedRef.current)
+    if (!notificationsLoadedRef.current) {
+      console.log('Initializing notifications...')
+      const mockNotifications = [
+        {
+          id: 'notif-1',
+          type: 'info' as const,
+          title: 'Welcome to Aurora Play!',
+          message: 'Thanks for joining our community. Discover amazing movies, series, and gaming content.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
+          isRead: false,
+          actionUrl: '/discover',
+          actionText: 'Explore Now',
+          sender: {
+            id: 'system',
+            name: 'Aurora Play',
+            avatar: 'https://picsum.photos/seed/aurora/100/100'
+          }
+        },
+        {
+          id: 'notif-2',
+          type: 'success' as const,
+          title: 'Achievement Unlocked!',
+          message: 'Congratulations! You\'ve watched 10 movies this month. Keep up the great work!',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+          isRead: false,
+          actionUrl: '/gaming/achievements',
+          actionText: 'View Achievements',
+          sender: {
+            id: 'system',
+            name: 'Aurora Play',
+            avatar: 'https://picsum.photos/seed/achievement/100/100'
+          }
+        },
+        {
+          id: 'notif-3',
+          type: 'friend_request' as const,
+          title: 'New Friend Request',
+          message: 'MovieBuff2024 wants to be your friend on Aurora Play.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), // 4 hours ago
+          isRead: true,
+          actionUrl: '/profile',
+          actionText: 'View Profile',
+          sender: {
+            id: 'user-123',
+            name: 'MovieBuff2024',
+            avatar: 'https://picsum.photos/seed/moviebuff/100/100'
+          }
+        },
+        {
+          id: 'notif-4',
+          type: 'watch_party_invite' as const,
+          title: 'Watch Party Invitation',
+          message: 'You\'ve been invited to join a watch party for "The Dark Knight" tonight at 8 PM.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), // 6 hours ago
+          isRead: false,
+          actionUrl: '/watch-party',
+          actionText: 'Join Party',
+          sender: {
+            id: 'user-456',
+            name: 'CinemaLover',
+            avatar: 'https://picsum.photos/seed/cinemalover/100/100'
+          },
+          relatedContent: {
+            type: 'movie' as const,
+            id: 'movie-1',
+            title: 'The Dark Knight'
+          }
+        },
+        {
+          id: 'notif-5',
+          type: 'content_update' as const,
+          title: 'New Episodes Available',
+          message: 'Season 2 of "Stranger Things" is now available to watch!',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12 hours ago
+          isRead: true,
+          actionUrl: '/series',
+          actionText: 'Watch Now',
+          sender: {
+            id: 'system',
+            name: 'Aurora Play',
+            avatar: 'https://picsum.photos/seed/netflix/100/100'
+          },
+          relatedContent: {
+            type: 'series' as const,
+            id: 'series-1',
+            title: 'Stranger Things'
+          }
+        },
+        {
+          id: 'notif-6',
+          type: 'new_follower' as const,
+          title: 'New Follower',
+          message: 'GamingPro99 started following you. Check out their gaming streams!',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(), // 18 hours ago
+          isRead: false,
+          actionUrl: '/profile',
+          actionText: 'View Profile',
+          sender: {
+            id: 'user-789',
+            name: 'GamingPro99',
+            avatar: 'https://picsum.photos/seed/gamingpro/100/100'
+          }
+        },
+        {
+          id: 'notif-7',
+          type: 'warning' as const,
+          title: 'Subscription Expiring',
+          message: 'Your premium subscription will expire in 3 days. Renew now to continue enjoying unlimited access.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+          isRead: false,
+          actionUrl: '/subscription',
+          actionText: 'Renew Now',
+          sender: {
+            id: 'system',
+            name: 'Aurora Play',
+            avatar: 'https://picsum.photos/seed/subscription/100/100'
+          }
+        },
+        {
+          id: 'notif-8',
+          type: 'achievement' as const,
+          title: 'Gaming Milestone!',
+          message: 'You\'ve completed 50 games in Aurora Gaming! You\'re officially a gaming champion.',
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
+          isRead: true,
+          actionUrl: '/gaming/achievements',
+          actionText: 'View Badge',
+          sender: {
+            id: 'system',
+            name: 'Aurora Gaming',
+            avatar: 'https://picsum.photos/seed/gaming/100/100'
+          }
+        }
+      ]
+      console.log('Dispatching notifications:', mockNotifications.length)
+      dispatch(setNotifications(mockNotifications))
+      notificationsLoadedRef.current = true
+      console.log('Notifications dispatched and ref set')
+    } else {
+      console.log('Notifications already loaded:', notifications.length)
+    }
+  }, []) // Empty dependency array to run only once
 
   const filteredNotifications = filter === 'unread'
     ? notifications.filter(n => !n.isRead)
     : notifications
+
+  console.log('Filtered notifications:', filteredNotifications.length, 'filter:', filter)
 
   const handleMarkAsRead = (id: string) => {
     dispatch(markAsRead(id))
