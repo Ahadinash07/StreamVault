@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useAppSelector } from '@/app/hooks'
 import Header from '../../../components/Header'
@@ -18,7 +19,10 @@ import {
   FiTrendingUp,
   FiStar,
   FiZap,
-  FiAward
+  FiAward,
+  FiBookmark,
+  FiMail,
+  FiSend
 } from 'react-icons/fi'
 import { motion } from 'framer-motion'
 
@@ -143,6 +147,7 @@ const mockArticles: NewsArticle[] = [
 export default function GamingNewsPage() {
   const { user, isAuthenticated } = useAppSelector((state) => state.user)
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const router = useRouter()
 
   const categories = [
     { id: 'all', label: 'All News', icon: FiInfo },
@@ -179,144 +184,223 @@ export default function GamingNewsPage() {
     })
   }
 
+  const handleArticleClick = (articleId: string) => {
+    router.push(`/gaming/news/${articleId}`)
+  }
+
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <Header />
       <main className="pt-20">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-900/20 via-cyan-900/20 to-teal-900/20">
-          <div className="container mx-auto px-4 py-16">
-            <div className="text-center max-w-4xl mx-auto">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <FiInfo className="w-12 h-12 text-blue-400" />
-                <h1 className="text-4xl md:text-6xl font-bold text-white">
-                  News & Updates
-                </h1>
-              </div>
+        {/* Enhanced Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-purple-900/30 to-cyan-900/30"></div>
 
-              <p className="text-xl md:text-2xl text-gray-300 mb-8">
-                Stay up to date with the latest Aurora Gaming news, features, and events
-              </p>
-
-              <div className="flex justify-center gap-8 text-gray-400 mb-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white">{mockArticles.length}</div>
-                  <div className="text-sm">Articles</div>
+          <div className="container mx-auto px-4 py-20 relative z-10">
+            <div className="text-center max-w-5xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center justify-center gap-4 mb-8"
+              >
+                <div className="relative">
+                  <FiInfo className="w-16 h-16 text-blue-400" />
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-purple-500 rounded-full animate-pulse"></div>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white">
+                <div>
+                  <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                    News & Updates
+                  </h1>
+                  <div className="w-32 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto mt-4 rounded-full"></div>
+                </div>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed"
+              >
+                Stay ahead of the curve with the latest Aurora Gaming news, exclusive updates, and groundbreaking features
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="flex justify-center gap-12 text-gray-400 mb-12"
+              >
+                <div className="text-center group">
+                  <div className="text-4xl font-bold text-white group-hover:text-blue-400 transition-colors mb-2">
+                    {mockArticles.length}
+                  </div>
+                  <div className="text-sm uppercase tracking-wider">Articles</div>
+                </div>
+                <div className="text-center group">
+                  <div className="text-4xl font-bold text-white group-hover:text-purple-400 transition-colors mb-2">
                     {mockArticles.reduce((sum, article) => sum + article.views, 0).toLocaleString()}
                   </div>
-                  <div className="text-sm">Total Views</div>
+                  <div className="text-sm uppercase tracking-wider">Total Views</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white">
+                <div className="text-center group">
+                  <div className="text-4xl font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">
                     {mockArticles.reduce((sum, article) => sum + article.likes, 0)}
                   </div>
-                  <div className="text-sm">Total Likes</div>
+                  <div className="text-sm uppercase tracking-wider">Total Likes</div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="flex flex-wrap justify-center gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-wrap justify-center gap-6"
+              >
                 <Link
                   href="/gaming"
-                  className="inline-flex items-center px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
+                  className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-600"
                 >
-                  <FiChevronLeft className="w-5 h-5 mr-2" />
+                  <FiChevronLeft className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform" />
                   Back to Gaming
                 </Link>
                 {isAuthenticated && (
-                  <button className="inline-flex items-center px-8 py-3 border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black font-semibold rounded-lg transition-colors">
-                    <FiTag className="w-5 h-5 mr-2" />
+                  <button className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-yellow-500/25">
+                    <FiTag className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
                     Subscribe to Updates
                   </button>
                 )}
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
 
-        {/* Category Filters */}
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {categories.map((category) => (
-              <button
+        {/* Enhanced Category Filters */}
+        <div className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="flex flex-wrap justify-center gap-3 mb-12"
+          >
+            {categories.map((category, index) => (
+              <motion.button
                 key={category.id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.9 + index * 0.1 }}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                className={`group relative overflow-hidden px-6 py-3 rounded-2xl font-semibold transition-all duration-300 ${
                   selectedCategory === category.id
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-dark-100 text-gray-300 hover:bg-dark-200'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25 scale-105'
+                    : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 hover:text-white hover:scale-105 border border-gray-700/50'
                 }`}
               >
-                <category.icon className="w-4 h-4" />
-                {category.label}
-              </button>
+                <div className="flex items-center gap-3">
+                  <category.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${
+                    selectedCategory === category.id ? 'text-white' : 'text-gray-400'
+                  }`} />
+                  <span className="text-sm uppercase tracking-wider">{category.label}</span>
+                </div>
+                {selectedCategory === category.id && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 animate-pulse"></div>
+                )}
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
 
-          {/* Featured Article */}
+          {/* Enhanced Featured Article */}
           {featuredArticle && selectedCategory === 'all' && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-12"
+              transition={{ delay: 1.0 }}
+              className="mb-16"
             >
-              <div className="bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-500/30 rounded-lg overflow-hidden">
-                <div className="md:flex">
-                  <div className="md:w-1/2">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2">Featured Article</h2>
+                <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto rounded-full"></div>
+              </div>
+
+              <div
+                onClick={() => handleArticleClick(featuredArticle.id)}
+                className="group cursor-pointer relative overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 shadow-2xl hover:shadow-blue-500/10"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                <div className="md:flex relative z-10">
+                  <div className="md:w-1/2 relative overflow-hidden rounded-l-3xl">
                     <Image
                       src={featuredArticle.image}
                       alt={featuredArticle.title}
                       width={600}
-                      height={300}
-                      className="w-full h-64 md:h-full object-cover"
+                      height={400}
+                      className="w-full h-80 md:h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                  </div>
-                  <div className="md:w-1/2 p-8">
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="bg-red-600 text-white text-xs px-3 py-1 rounded-full">FEATURED</span>
-                      <span className={`px-3 py-1 rounded-full text-xs text-white ${getCategoryColor(featuredArticle.category)}`}>
-                        {featuredArticle.category.toUpperCase()}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute top-6 left-6">
+                      <span className="inline-flex items-center px-4 py-2 bg-red-600/90 backdrop-blur-sm text-white text-sm font-bold rounded-full shadow-lg">
+                        ⭐ FEATURED
                       </span>
                     </div>
+                    <div className="absolute top-6 right-6">
+                      <span className={`inline-flex items-center px-4 py-2 backdrop-blur-sm text-white text-sm font-bold rounded-full shadow-lg ${getCategoryColor(featuredArticle.category)}`}>
+                        {featuredArticle.category.charAt(0).toUpperCase() + featuredArticle.category.slice(1)}
+                      </span>
+                    </div>
+                  </div>
 
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                      {featuredArticle.title}
-                    </h2>
+                  <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                    <div className="mb-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center">
+                          <FiStar className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-blue-400 font-semibold uppercase tracking-wider text-sm">Breaking News</span>
+                      </div>
 
-                    <p className="text-gray-300 mb-6">{featuredArticle.excerpt}</p>
+                      <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-blue-300 transition-colors duration-300">
+                        {featuredArticle.title}
+                      </h3>
 
-                    <div className="flex items-center gap-4 mb-6">
+                      <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                        {featuredArticle.excerpt}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-6 mb-8">
                       <Image
                         src={featuredArticle.author.avatar}
                         alt={featuredArticle.author.name}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
+                        width={50}
+                        height={50}
+                        className="rounded-full border-2 border-gray-600"
                       />
                       <div>
-                        <div className="text-white font-semibold">{featuredArticle.author.name}</div>
+                        <div className="text-white font-semibold text-lg">{featuredArticle.author.name}</div>
                         <div className="text-gray-400 text-sm">{featuredArticle.author.role}</div>
                       </div>
-                      <div className="text-gray-400 text-sm">
-                        {formatDate(featuredArticle.publishedAt)} • {featuredArticle.readTime} min read
+                      <div className="text-gray-400 text-sm ml-auto">
+                        <div>{formatDate(featuredArticle.publishedAt)}</div>
+                        <div>{featuredArticle.readTime} min read</div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="flex items-center gap-1 text-gray-400">
-                        <FiEye className="w-4 h-4" />
-                        <span>{featuredArticle.views.toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-gray-400">
-                        <FiHeart className="w-4 h-4" />
-                        <span>{featuredArticle.likes}</span>
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-6 text-gray-400">
+                        <div className="flex items-center gap-2">
+                          <FiEye className="w-5 h-5" />
+                          <span className="font-semibold">{featuredArticle.views.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FiHeart className="w-5 h-5" />
+                          <span className="font-semibold">{featuredArticle.likes}</span>
+                        </div>
                       </div>
                     </div>
 
-                    <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-                      Read Full Article
+                    <button className="group/btn w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 flex items-center justify-center gap-3">
+                      <span>Read Full Article</span>
+                      <FiChevronLeft className="w-5 h-5 rotate-180 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
                   </div>
                 </div>
@@ -324,112 +408,151 @@ export default function GamingNewsPage() {
             </motion.div>
           )}
 
-          {/* Article Grid */}
+          {/* Enhanced Article Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {regularArticles.map((article, index) => (
               <motion.div
                 key={article.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-dark-100 rounded-lg overflow-hidden border border-dark-200 hover:border-purple-500/30 transition-colors"
+                transition={{ delay: 1.2 + index * 0.1 }}
+                onClick={() => handleArticleClick(article.id)}
+                className="group cursor-pointer relative overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 shadow-2xl hover:shadow-blue-500/10 hover:scale-105"
               >
-                <div className="relative">
-                  <Image
-                    src={article.image}
-                    alt={article.title}
-                    width={400}
-                    height={200}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className={`px-2 py-1 rounded text-xs text-white ${getCategoryColor(article.category)}`}>
-                      {article.category}
-                    </span>
-                  </div>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-3 line-clamp-2">
-                    {article.title}
-                  </h3>
-
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                    {article.excerpt}
-                  </p>
-
-                  <div className="flex items-center gap-3 mb-4">
+                <div className="relative z-10">
+                  <div className="relative overflow-hidden rounded-t-3xl">
                     <Image
-                      src={article.author.avatar}
-                      alt={article.author.name}
-                      width={32}
-                      height={32}
-                      className="rounded-full"
+                      src={article.image}
+                      alt={article.title}
+                      width={400}
+                      height={200}
+                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="flex-1">
-                      <div className="text-white text-sm font-semibold">{article.author.name}</div>
-                      <div className="text-gray-500 text-xs">{formatDate(article.publishedAt)}</div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute top-4 left-4">
+                      <span className={`inline-flex items-center px-3 py-1 backdrop-blur-sm text-white text-xs font-bold rounded-full shadow-lg ${getCategoryColor(article.category)}`}>
+                        {article.category.charAt(0).toUpperCase() + article.category.slice(1)}
+                      </span>
                     </div>
-                    <div className="text-gray-500 text-xs">{article.readTime} min</div>
-                  </div>
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3 text-sm text-gray-400">
-                      <div className="flex items-center gap-1">
-                        <FiEye className="w-4 h-4" />
-                        <span>{article.views.toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <FiHeart className="w-4 h-4" />
-                        <span>{article.likes}</span>
+                    <div className="absolute top-4 right-4">
+                      <div className="w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center">
+                        <FiBookmark className="w-5 h-5 text-white group-hover:text-blue-400 transition-colors" />
                       </div>
                     </div>
                   </div>
 
-                  {article.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {article.tags.slice(0, 3).map(tag => (
-                        <span key={tag} className="text-xs bg-dark-200 text-gray-400 px-2 py-1 rounded">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-blue-300 transition-colors duration-300 leading-tight">
+                      {article.title}
+                    </h3>
 
-                  <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
-                    Read More
-                  </button>
+                    <p className="text-gray-300 text-sm mb-6 line-clamp-3 leading-relaxed">
+                      {article.excerpt}
+                    </p>
+
+                    <div className="flex items-center gap-3 mb-6">
+                      <Image
+                        src={article.author.avatar}
+                        alt={article.author.name}
+                        width={36}
+                        height={36}
+                        className="rounded-full border-2 border-gray-600"
+                      />
+                      <div className="flex-1">
+                        <div className="text-white text-sm font-semibold">{article.author.name}</div>
+                        <div className="text-gray-400 text-xs">{formatDate(article.publishedAt)}</div>
+                      </div>
+                      <div className="text-gray-400 text-xs text-right">
+                        <div>{article.readTime} min</div>
+                        <div>read</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-4 text-sm text-gray-400">
+                        <div className="flex items-center gap-1">
+                          <FiEye className="w-4 h-4" />
+                          <span className="font-semibold">{article.views.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <FiHeart className="w-4 h-4" />
+                          <span className="font-semibold">{article.likes}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {article.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {article.tags.slice(0, 3).map(tag => (
+                          <span key={tag} className="text-xs bg-gray-800/50 text-gray-300 px-3 py-1 rounded-full border border-gray-600/50">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <button className="group/btn w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 flex items-center justify-center gap-2">
+                      <span>Read Article</span>
+                      <FiChevronLeft className="w-4 h-4 rotate-180 group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
 
           {filteredArticles.length === 0 && (
-            <div className="text-center py-16">
-              <FiInfo className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">No articles found</h3>
-              <p className="text-gray-500">Try selecting a different category</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-20"
+            >
+              <div className="w-24 h-24 bg-gradient-to-br from-gray-800 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-600">
+                <FiInfo className="w-12 h-12 text-gray-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">No articles found</h3>
+              <p className="text-gray-400 mb-8 max-w-md mx-auto">Try selecting a different category or check back later for new content.</p>
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25"
+              >
+                View All Articles
+              </button>
+            </motion.div>
           )}
 
-          {/* Newsletter Signup */}
-          <div className="mt-16 bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-500/30 rounded-lg p-8 text-center">
-            <FiInfo className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-white mb-4">Stay Updated</h3>
-            <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-              Subscribe to our newsletter to get the latest news, feature updates, and tournament announcements delivered to your inbox.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-dark-100 border border-dark-200 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-              />
-              <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-                Subscribe
-              </button>
+          {/* Enhanced Newsletter Signup */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5 }}
+            className="mt-20 relative overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-700/50 shadow-2xl"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10"></div>
+            <div className="relative z-10 p-12 text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                <FiMail className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-3xl font-bold text-white mb-4">Stay in the Game</h3>
+              <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                Subscribe to our newsletter to get the latest news, feature updates, tournament announcements, and exclusive gaming content delivered straight to your inbox.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="flex-1 px-6 py-4 bg-gray-800/50 border border-gray-600 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:bg-gray-800/80 transition-all duration-300 backdrop-blur-sm"
+                />
+                <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 flex items-center justify-center gap-2">
+                  <FiSend className="w-5 h-5" />
+                  <span>Subscribe</span>
+                </button>
+              </div>
+              <p className="text-gray-500 text-sm mt-6">No spam, unsubscribe at any time.</p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </main>
       <Footer />

@@ -1,0 +1,675 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+export interface Stream {
+  id: string
+  title: string
+  description: string
+  streamer: {
+    id: string
+    username: string
+    displayName: string
+    avatar: string
+    banner?: string
+    isVerified: boolean
+    isPartner: boolean
+    followerCount: number
+    totalViews: number
+    bio: string
+    socialLinks: {
+      twitch?: string
+      youtube?: string
+      twitter?: string
+      discord?: string
+    }
+  }
+  game: {
+    id: string
+    name: string
+    icon: string
+    category: string
+    thumbnail: string
+  }
+  thumbnail: string
+  streamKey?: string
+  isLive: boolean
+  isScheduled: boolean
+  viewerCount: number
+  peakViewers: number
+  startedAt?: string
+  scheduledFor?: string
+  endedAt?: string
+  duration?: number
+  tags: string[]
+  category: 'gaming' | 'esports' | 'creative' | 'community' | 'educational'
+  language: string
+  quality: '720p' | '1080p' | '4K'
+  chatEnabled: boolean
+  donationsEnabled: boolean
+  subscriptionsEnabled: boolean
+  isFollowing: boolean
+  isSubscribed: boolean
+  chat: StreamChatMessage[]
+  emotes: StreamEmote[]
+  polls: StreamPoll[]
+  goals: StreamGoal[]
+  streamStats: {
+    uptime: number
+    averageViewers: number
+    newFollowers: number
+    chatMessages: number
+  }
+}
+
+export interface StreamChatMessage {
+  id: string
+  userId: string
+  username: string
+  avatar: string
+  content: string
+  createdAt: string
+  isModerator: boolean
+  isSubscriber: boolean
+  isVIP: boolean
+  badges: string[]
+  emotes: { id: string; positions: number[][] }[]
+  mentions: string[]
+}
+
+export interface StreamEmote {
+  id: string
+  name: string
+  url: string
+  isGlobal: boolean
+  subscriberOnly: boolean
+}
+
+export interface StreamPoll {
+  id: string
+  question: string
+  options: { id: string; text: string; votes: number }[]
+  totalVotes: number
+  isActive: boolean
+  createdAt: string
+  endsAt: string
+}
+
+export interface StreamGoal {
+  id: string
+  title: string
+  description: string
+  type: 'follower' | 'subscriber' | 'donation' | 'bits'
+  current: number
+  target: number
+  isActive: boolean
+  createdAt: string
+  endsAt?: string
+}
+
+export interface StreamCategory {
+  id: string
+  name: string
+  icon: string
+  description: string
+  streamCount: number
+  viewerCount: number
+  color: string
+}
+
+export interface StreamState {
+  streams: Stream[]
+  liveStreams: Stream[]
+  scheduledStreams: Stream[]
+  followedStreams: Stream[]
+  categories: StreamCategory[]
+  currentStream: Stream | null
+  featuredStream: Stream | null
+  loading: boolean
+  error: string | null
+  filters: {
+    category: string
+    language: string
+    quality: string
+    search: string
+    sortBy: 'viewerCount' | 'startedAt' | 'trending'
+  }
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    hasMore: boolean
+  }
+  userInteractions: {
+    followedStreamers: string[]
+    subscribedChannels: string[]
+    blockedUsers: string[]
+  }
+  chat: {
+    messages: StreamChatMessage[]
+    isConnected: boolean
+    unreadCount: number
+  }
+  streamSettings: {
+    volume: number
+    quality: string
+    theaterMode: boolean
+    chatVisible: boolean
+  }
+}
+
+const mockStreams: Stream[] = [
+  {
+    id: 'stream-1',
+    title: 'Movie Trivia Championship - Live Tournament! 🏆',
+    description: 'Join me for the weekly movie trivia championship! Testing knowledge on classics, blockbusters, and hidden gems. Prizes for top performers!',
+    streamer: {
+      id: 'streamer-1',
+      username: 'triviamaster',
+      displayName: 'TriviaMaster',
+      avatar: 'https://picsum.photos/seed/streamer1/100/100',
+      banner: 'https://picsum.photos/seed/streamer1-banner/800/200',
+      isVerified: true,
+      isPartner: true,
+      followerCount: 15420,
+      totalViews: 1250000,
+      bio: 'Professional movie trivia host and gaming enthusiast. Weekly tournaments every Saturday!',
+      socialLinks: {
+        twitch: 'https://twitch.tv/triviamaster',
+        twitter: 'https://twitter.com/triviamaster',
+        discord: 'https://discord.gg/triviamaster'
+      }
+    },
+    game: {
+      id: 'movie-trivia-master',
+      name: 'Movie Trivia Master',
+      icon: '🎬',
+      category: 'Trivia',
+      thumbnail: 'https://picsum.photos/seed/game-trivia/200/200'
+    },
+    thumbnail: 'https://picsum.photos/seed/stream1/400/225',
+    isLive: true,
+    isScheduled: false,
+    viewerCount: 2847,
+    peakViewers: 3200,
+    startedAt: '2024-01-20T19:30:00Z',
+    tags: ['trivia', 'championship', 'movies', 'competition', 'live'],
+    category: 'esports',
+    language: 'English',
+    quality: '1080p',
+    chatEnabled: true,
+    donationsEnabled: true,
+    subscriptionsEnabled: true,
+    isFollowing: true,
+    isSubscribed: false,
+    chat: [],
+    emotes: [],
+    polls: [],
+    goals: [
+      {
+        id: 'goal-1',
+        title: 'Reach 3000 viewers!',
+        description: 'Help us reach our viewer goal for this tournament!',
+        type: 'follower',
+        current: 2847,
+        target: 3000,
+        isActive: true,
+        createdAt: '2024-01-20T19:30:00Z'
+      }
+    ],
+    streamStats: {
+      uptime: 45, // minutes
+      averageViewers: 2500,
+      newFollowers: 23,
+      chatMessages: 1250
+    }
+  },
+  {
+    id: 'stream-2',
+    title: 'Creative Plot Twisting - Building Stories Together 🎭',
+    description: 'Let\'s create the most creative and unexpected plot twists! Community participation encouraged. Vote on story directions!',
+    streamer: {
+      id: 'streamer-2',
+      username: 'storyweaver',
+      displayName: 'StoryWeaver',
+      avatar: 'https://picsum.photos/seed/streamer2/100/100',
+      isVerified: true,
+      isPartner: false,
+      followerCount: 8920,
+      totalViews: 450000,
+      bio: 'Creative writer and storyteller. Let\'s build amazing stories together!',
+      socialLinks: {
+        youtube: 'https://youtube.com/storyweaver',
+        twitter: 'https://twitter.com/storyweaver'
+      }
+    },
+    game: {
+      id: 'plot-twister',
+      name: 'Plot Twister',
+      icon: '🎭',
+      category: 'Creative',
+      thumbnail: 'https://picsum.photos/seed/game-plot/200/200'
+    },
+    thumbnail: 'https://picsum.photos/seed/stream2/400/225',
+    isLive: true,
+    isScheduled: false,
+    viewerCount: 1245,
+    peakViewers: 1450,
+    startedAt: '2024-01-20T18:00:00Z',
+    tags: ['creative', 'storytelling', 'community', 'interactive'],
+    category: 'creative',
+    language: 'English',
+    quality: '720p',
+    chatEnabled: true,
+    donationsEnabled: true,
+    subscriptionsEnabled: false,
+    isFollowing: false,
+    isSubscribed: false,
+    chat: [],
+    emotes: [],
+    polls: [
+      {
+        id: 'poll-1',
+        question: 'Which plot twist should we go with?',
+        options: [
+          { id: 'opt-1', text: 'The butler did it!', votes: 45 },
+          { id: 'opt-2', text: 'Time travel paradox', votes: 67 },
+          { id: 'opt-3', text: 'It was all a dream', votes: 23 }
+        ],
+        totalVotes: 135,
+        isActive: true,
+        createdAt: '2024-01-20T18:30:00Z',
+        endsAt: '2024-01-20T19:00:00Z'
+      }
+    ],
+    goals: [],
+    streamStats: {
+      uptime: 90,
+      averageViewers: 1100,
+      newFollowers: 8,
+      chatMessages: 890
+    }
+  },
+  {
+    id: 'stream-3',
+    title: 'Late Night Gaming Session - Chill Vibes Only 🌙',
+    description: 'Just chilling and playing some casual games. Come hang out, chat, and relax. No pressure gaming!',
+    streamer: {
+      id: 'streamer-3',
+      username: 'chillgamer',
+      displayName: 'ChillGamer',
+      avatar: 'https://picsum.photos/seed/streamer3/100/100',
+      isVerified: false,
+      isPartner: false,
+      followerCount: 2340,
+      totalViews: 89000,
+      bio: 'Casual gamer who loves to chill and chat with the community.',
+      socialLinks: {
+        discord: 'https://discord.gg/chillgamer'
+      }
+    },
+    game: {
+      id: 'chill-games',
+      name: 'Various Games',
+      icon: '🎮',
+      category: 'Casual',
+      thumbnail: 'https://picsum.photos/seed/game-chill/200/200'
+    },
+    thumbnail: 'https://picsum.photos/seed/stream3/400/225',
+    isLive: true,
+    isScheduled: false,
+    viewerCount: 567,
+    peakViewers: 678,
+    startedAt: '2024-01-20T22:00:00Z',
+    tags: ['chill', 'casual', 'community', 'relaxing'],
+    category: 'community',
+    language: 'English',
+    quality: '720p',
+    chatEnabled: true,
+    donationsEnabled: false,
+    subscriptionsEnabled: false,
+    isFollowing: false,
+    isSubscribed: false,
+    chat: [],
+    emotes: [],
+    polls: [],
+    goals: [],
+    streamStats: {
+      uptime: 120,
+      averageViewers: 520,
+      newFollowers: 3,
+      chatMessages: 450
+    }
+  },
+  {
+    id: 'stream-4',
+    title: 'Educational Stream: Game Development Fundamentals 📚',
+    description: 'Learning game development from scratch! Today: Understanding game loops, basic physics, and creating your first interactive game.',
+    streamer: {
+      id: 'streamer-4',
+      username: 'gamedev_teacher',
+      displayName: 'GameDev Teacher',
+      avatar: 'https://picsum.photos/seed/streamer4/100/100',
+      isVerified: true,
+      isPartner: true,
+      followerCount: 12500,
+      totalViews: 780000,
+      bio: 'Professional game developer teaching others to create amazing games.',
+      socialLinks: {
+        youtube: 'https://youtube.com/gamedevteacher',
+        twitter: 'https://twitter.com/gamedevteacher'
+      }
+    },
+    game: {
+      id: 'game-dev-tutorial',
+      name: 'Game Development Tutorial',
+      icon: '💻',
+      category: 'Educational',
+      thumbnail: 'https://picsum.photos/seed/game-dev/200/200'
+    },
+    thumbnail: 'https://picsum.photos/seed/stream4/400/225',
+    isLive: true,
+    isScheduled: false,
+    viewerCount: 892,
+    peakViewers: 1100,
+    startedAt: '2024-01-20T16:00:00Z',
+    tags: ['educational', 'tutorial', 'gamedev', 'learning'],
+    category: 'educational',
+    language: 'English',
+    quality: '1080p',
+    chatEnabled: true,
+    donationsEnabled: true,
+    subscriptionsEnabled: true,
+    isFollowing: true,
+    isSubscribed: true,
+    chat: [],
+    emotes: [],
+    polls: [],
+    goals: [
+      {
+        id: 'goal-2',
+        title: '100 subscribers this month!',
+        description: 'Help us reach our subscriber goal!',
+        type: 'subscriber',
+        current: 87,
+        target: 100,
+        isActive: true,
+        createdAt: '2024-01-01T00:00:00Z'
+      }
+    ],
+    streamStats: {
+      uptime: 180,
+      averageViewers: 950,
+      newFollowers: 12,
+      chatMessages: 1200
+    }
+  },
+  {
+    id: 'stream-5',
+    title: 'Scheduled: Weekly Tournament Preview 🗓️',
+    description: 'Preview of this week\'s tournament format and practice session. Get ready for the big event!',
+    streamer: {
+      id: 'streamer-1',
+      username: 'triviamaster',
+      displayName: 'TriviaMaster',
+      avatar: 'https://picsum.photos/seed/streamer1/100/100',
+      isVerified: true,
+      isPartner: true,
+      followerCount: 15420,
+      totalViews: 1250000,
+      bio: 'Professional movie trivia host and gaming enthusiast.',
+      socialLinks: {
+        twitch: 'https://twitch.tv/triviamaster',
+        twitter: 'https://twitter.com/triviamaster',
+        discord: 'https://discord.gg/triviamaster'
+      }
+    },
+    game: {
+      id: 'movie-trivia-master',
+      name: 'Movie Trivia Master',
+      icon: '🎬',
+      category: 'Trivia',
+      thumbnail: 'https://picsum.photos/seed/game-trivia/200/200'
+    },
+    thumbnail: 'https://picsum.photos/seed/stream5/400/225',
+    isLive: false,
+    isScheduled: true,
+    viewerCount: 0,
+    peakViewers: 0,
+    scheduledFor: '2024-01-22T19:00:00Z',
+    tags: ['preview', 'tournament', 'practice', 'scheduled'],
+    category: 'esports',
+    language: 'English',
+    quality: '1080p',
+    chatEnabled: false,
+    donationsEnabled: false,
+    subscriptionsEnabled: false,
+    isFollowing: true,
+    isSubscribed: false,
+    chat: [],
+    emotes: [],
+    polls: [],
+    goals: [],
+    streamStats: {
+      uptime: 0,
+      averageViewers: 0,
+      newFollowers: 0,
+      chatMessages: 0
+    }
+  }
+]
+
+const mockCategories: StreamCategory[] = [
+  {
+    id: 'gaming',
+    name: 'Gaming',
+    icon: '🎮',
+    description: 'Traditional video game streaming',
+    streamCount: 245,
+    viewerCount: 125000,
+    color: 'bg-purple-600'
+  },
+  {
+    id: 'esports',
+    name: 'Esports',
+    icon: '🏆',
+    description: 'Competitive gaming and tournaments',
+    streamCount: 89,
+    viewerCount: 89000,
+    color: 'bg-red-600'
+  },
+  {
+    id: 'creative',
+    name: 'Creative',
+    icon: '🎨',
+    description: 'Art, music, and creative content',
+    streamCount: 156,
+    viewerCount: 67000,
+    color: 'bg-green-600'
+  },
+  {
+    id: 'community',
+    name: 'Community',
+    icon: '👥',
+    description: 'Community events and social streams',
+    streamCount: 78,
+    viewerCount: 34000,
+    color: 'bg-blue-600'
+  },
+  {
+    id: 'educational',
+    name: 'Educational',
+    icon: '📚',
+    description: 'Learning and educational content',
+    streamCount: 45,
+    viewerCount: 23000,
+    color: 'bg-yellow-600'
+  }
+]
+
+const initialState: StreamState = {
+  streams: mockStreams,
+  liveStreams: mockStreams.filter(stream => stream.isLive),
+  scheduledStreams: mockStreams.filter(stream => stream.isScheduled),
+  followedStreams: mockStreams.filter(stream => stream.isFollowing),
+  categories: mockCategories,
+  currentStream: null,
+  featuredStream: mockStreams.find(stream => stream.isLive && stream.viewerCount > 2000) || null,
+  loading: false,
+  error: null,
+  filters: {
+    category: 'all',
+    language: 'all',
+    quality: 'all',
+    search: '',
+    sortBy: 'viewerCount'
+  },
+  pagination: {
+    page: 1,
+    limit: 20,
+    total: mockStreams.length,
+    hasMore: false
+  },
+  userInteractions: {
+    followedStreamers: ['streamer-1', 'streamer-4'],
+    subscribedChannels: ['streamer-4'],
+    blockedUsers: []
+  },
+  chat: {
+    messages: [],
+    isConnected: false,
+    unreadCount: 0
+  },
+  streamSettings: {
+    volume: 1,
+    quality: 'auto',
+    theaterMode: false,
+    chatVisible: true
+  }
+}
+
+const streamsSlice = createSlice({
+  name: 'streams',
+  initialState,
+  reducers: {
+    setCurrentStream: (state, action: PayloadAction<Stream | null>) => {
+      state.currentStream = action.payload
+    },
+    followStreamer: (state, action: PayloadAction<string>) => {
+      const streamerId = action.payload
+      const isFollowing = state.userInteractions.followedStreamers.includes(streamerId)
+      if (isFollowing) {
+        state.userInteractions.followedStreamers = state.userInteractions.followedStreamers.filter(id => id !== streamerId)
+        // Update streams
+        state.streams.forEach(stream => {
+          if (stream.streamer.id === streamerId) {
+            stream.isFollowing = false
+          }
+        })
+      } else {
+        state.userInteractions.followedStreamers.push(streamerId)
+        // Update streams
+        state.streams.forEach(stream => {
+          if (stream.streamer.id === streamerId) {
+            stream.isFollowing = true
+          }
+        })
+      }
+      // Update filtered lists
+      state.followedStreams = state.streams.filter(stream => stream.isFollowing)
+    },
+    subscribeToChannel: (state, action: PayloadAction<string>) => {
+      const streamerId = action.payload
+      const isSubscribed = state.userInteractions.subscribedChannels.includes(streamerId)
+      if (isSubscribed) {
+        state.userInteractions.subscribedChannels = state.userInteractions.subscribedChannels.filter(id => id !== streamerId)
+        // Update streams
+        state.streams.forEach(stream => {
+          if (stream.streamer.id === streamerId) {
+            stream.isSubscribed = false
+          }
+        })
+      } else {
+        state.userInteractions.subscribedChannels.push(streamerId)
+        // Update streams
+        state.streams.forEach(stream => {
+          if (stream.streamer.id === streamerId) {
+            stream.isSubscribed = true
+          }
+        })
+      }
+    },
+    sendChatMessage: (state, action: PayloadAction<{ streamId: string; message: Omit<StreamChatMessage, 'id' | 'createdAt'> }>) => {
+      const { streamId, message } = action.payload
+      const newMessage: StreamChatMessage = {
+        ...message,
+        id: `msg-${Date.now()}`,
+        createdAt: new Date().toISOString()
+      }
+      state.chat.messages.push(newMessage)
+      state.chat.unreadCount += 1
+    },
+    voteInPoll: (state, action: PayloadAction<{ pollId: string; optionId: string }>) => {
+      const { pollId, optionId } = action.payload
+      const stream = state.currentStream
+      if (stream) {
+        const poll = stream.polls.find(p => p.id === pollId)
+        if (poll && poll.isActive) {
+          const option = poll.options.find(o => o.id === optionId)
+          if (option) {
+            option.votes += 1
+            poll.totalVotes += 1
+          }
+        }
+      }
+    },
+    setFilters: (state, action: PayloadAction<Partial<StreamState['filters']>>) => {
+      state.filters = { ...state.filters, ...action.payload }
+    },
+    setStreamSettings: (state, action: PayloadAction<Partial<StreamState['streamSettings']>>) => {
+      state.streamSettings = { ...state.streamSettings, ...action.payload }
+    },
+    updateViewerCount: (state, action: PayloadAction<{ streamId: string; count: number }>) => {
+      const { streamId, count } = action.payload
+      const stream = state.streams.find(s => s.id === streamId)
+      if (stream) {
+        stream.viewerCount = count
+        if (count > stream.peakViewers) {
+          stream.peakViewers = count
+        }
+      }
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload
+    },
+    loadMoreStreams: (state) => {
+      state.pagination.page += 1
+      state.pagination.hasMore = state.pagination.page < 5
+    },
+    connectToChat: (state) => {
+      state.chat.isConnected = true
+    },
+    disconnectFromChat: (state) => {
+      state.chat.isConnected = false
+    }
+  }
+})
+
+export const {
+  setCurrentStream,
+  followStreamer,
+  subscribeToChannel,
+  sendChatMessage,
+  voteInPoll,
+  setFilters,
+  setStreamSettings,
+  updateViewerCount,
+  setLoading,
+  setError,
+  loadMoreStreams,
+  connectToChat,
+  disconnectFromChat
+} = streamsSlice.actions
+
+export default streamsSlice.reducer</content>

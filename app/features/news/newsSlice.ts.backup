@@ -1,0 +1,509 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+export interface NewsArticle {
+  id: string
+  title: string
+  excerpt: string
+  content: string
+  author: {
+    id: string
+    name: string
+    avatar: string
+    role: string
+    bio?: string
+  }
+  publishedAt: string
+  updatedAt?: string
+  category: 'announcements' | 'updates' | 'features' | 'events' | 'tournaments' | 'community'
+  tags: string[]
+  image: string
+  thumbnail: string
+  featured: boolean
+  views: number
+  likes: number
+  likedBy: string[]
+  readTime: number
+  comments: NewsComment[]
+  relatedArticles: string[]
+  seoTitle?: string
+  seoDescription?: string
+  isPublished: boolean
+}
+
+export interface NewsComment {
+  id: string
+  userId: string
+  username: string
+  avatar: string
+  content: string
+  createdAt: string
+  likes: number
+  likedBy: string[]
+  replies?: NewsComment[]
+  parentId?: string
+}
+
+export interface NewsCategory {
+  id: string
+  name: string
+  description: string
+  icon: string
+  color: string
+  articleCount: number
+}
+
+export interface NewsState {
+  articles: NewsArticle[]
+  categories: NewsCategory[]
+  featuredArticles: NewsArticle[]
+  currentArticle: NewsArticle | null
+  loading: boolean
+  error: string | null
+  filters: {
+    category: string
+    search: string
+    sortBy: 'newest' | 'oldest' | 'popular' | 'trending'
+    dateRange: string
+  }
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    hasMore: boolean
+  }
+  userInteractions: {
+    likedArticles: string[]
+    bookmarkedArticles: string[]
+    readArticles: string[]
+  }
+  trending: NewsArticle[]
+  recent: NewsArticle[]
+}
+
+const mockArticles: NewsArticle[] = [
+  {
+    id: 'article-1',
+    title: 'New Tournament System Launches Next Week!',
+    excerpt: 'We\'re excited to announce a complete overhaul of our tournament system with new formats, bigger prizes, and enhanced matchmaking.',
+    content: `# New Tournament System Launches Next Week!
+
+We're thrilled to announce that our completely redesigned tournament system will go live next week! This major update brings significant improvements to how you compete and win prizes on Aurora Gaming.
+
+## What's New
+
+### 🎯 Enhanced Matchmaking
+- **Skill-based matching**: Players are now matched based on their actual performance and skill level
+- **Regional preferences**: Choose to compete with players from your region or globally
+- **Quick matchmaking**: Find games faster with our improved algorithms
+
+### 🏆 Bigger Prize Pools
+- **Increased rewards**: Tournament prize pools have been increased by 40%
+- **More winners**: Instead of just one winner, top 10 players now share the prize pool
+- **Bonus rewards**: Special achievements and milestones during tournaments
+
+### 🎮 New Tournament Formats
+- **Classic Tournaments**: Traditional single-elimination brackets
+- **Battle Royale**: Last player standing format
+- **Team Tournaments**: Form teams and compete together
+- **Seasonal Events**: Special limited-time tournaments with unique rewards
+
+### 📊 Improved Statistics
+- **Detailed analytics**: Track your performance across all tournaments
+- **Progress tracking**: See how you rank against other players
+- **Achievement system**: Unlock special badges and titles
+
+## How to Participate
+
+1. **Register**: Sign up for tournaments through the gaming dashboard
+2. **Prepare**: Practice in our training modes
+3. **Compete**: Join live tournaments and climb the rankings
+4. **Win**: Claim your rewards and celebrate your victories!
+
+The new system will be available starting January 25th. Make sure to update your game client and check out the new tournament hub in the gaming section.
+
+Stay tuned for more updates and happy gaming! 🎮`,
+    author: {
+      id: 'author-1',
+      name: 'Aurora Team',
+      avatar: 'https://picsum.photos/seed/team/100/100',
+      role: 'Game Director',
+      bio: 'Leading game development at Aurora Gaming with 10+ years of experience.'
+    },
+    publishedAt: '2024-01-20T10:00:00Z',
+    category: 'announcements',
+    tags: ['tournaments', 'new-features', 'prizes', 'matchmaking'],
+    image: 'https://picsum.photos/seed/news1/800/400',
+    thumbnail: 'https://picsum.photos/seed/news1/400/200',
+    featured: true,
+    views: 2450,
+    likes: 156,
+    likedBy: ['user-1', 'user-2', 'user-3'],
+    readTime: 3,
+    comments: [
+      {
+        id: 'comment-1',
+        userId: 'user-1',
+        username: 'GamerPro',
+        avatar: 'https://picsum.photos/seed/user1/50/50',
+        content: 'This looks amazing! Can\'t wait to try the new matchmaking system.',
+        createdAt: '2024-01-20T11:30:00Z',
+        likes: 12,
+        likedBy: ['user-2', 'user-3']
+      },
+      {
+        id: 'comment-2',
+        userId: 'user-2',
+        username: 'TriviaMaster',
+        avatar: 'https://picsum.photos/seed/user2/50/50',
+        content: 'The bigger prize pools are going to make tournaments so much more exciting!',
+        createdAt: '2024-01-20T12:15:00Z',
+        likes: 8,
+        likedBy: ['user-1']
+      }
+    ],
+    relatedArticles: ['article-2', 'article-3'],
+    isPublished: true
+  },
+  {
+    id: 'article-2',
+    title: 'January Achievement Challenges Are Live!',
+    excerpt: 'Complete these special challenges this month to earn exclusive rewards and climb the seasonal leaderboard.',
+    content: `# January Achievement Challenges Are Live!
+
+Welcome to January's exciting achievement challenges! This month, we're bringing you a variety of challenges designed to test different aspects of your gaming skills and creativity.
+
+## Monthly Challenges
+
+### 🎯 Trivia Master Challenges
+- **Speed Demon**: Answer 100 questions in under 2 minutes
+- **Genre Expert**: Score 95%+ on 5 different movie genres
+- **Streak Master**: Maintain a 20-question streak
+- **Daily Player**: Play trivia every day for a week
+
+### 🎮 Social Challenges
+- **Team Player**: Win 10 multiplayer games
+- **Mentor**: Help 5 new players in community events
+- **Content Creator**: Share 3 game highlights or tips
+- **Community Builder**: Start 2 discussion threads
+
+### 🏆 Tournament Challenges
+- **First Victory**: Win your first tournament
+- **Consistent Performer**: Place in top 50% in 5 tournaments
+- **Underdog**: Win a tournament as the lowest seed
+- **Comeback Kid**: Win after being down 0-2 in a best-of-5
+
+## Exclusive Rewards
+
+Complete challenges to unlock:
+- **Seasonal Badges**: Limited-time profile decorations
+- **Bonus XP**: Extra experience points for leveling up
+- **Exclusive Items**: Unique in-game cosmetics
+- **Priority Access**: Early access to new features
+
+## Leaderboard
+
+Compete with other players on the seasonal leaderboard:
+- **Top 100**: Special recognition and bonus rewards
+- **Weekly Winners**: Featured in community spotlight
+- **Hall of Fame**: Permanent recognition for top performers
+
+Don't miss out on these exciting challenges! Start completing them today and climb the leaderboard. Good luck! 🚀`,
+    author: {
+      id: 'author-2',
+      name: 'Community Manager',
+      avatar: 'https://picsum.photos/seed/cm/100/100',
+      role: 'Community Manager',
+      bio: 'Building and nurturing our amazing gaming community.'
+    },
+    publishedAt: '2024-01-15T14:30:00Z',
+    category: 'events',
+    tags: ['achievements', 'challenges', 'seasonal', 'rewards'],
+    image: 'https://picsum.photos/seed/news2/800/400',
+    thumbnail: 'https://picsum.photos/seed/news2/400/200',
+    featured: false,
+    views: 1890,
+    likes: 98,
+    likedBy: ['user-1', 'user-4'],
+    readTime: 2,
+    comments: [],
+    relatedArticles: ['article-1', 'article-4'],
+    isPublished: true
+  },
+  {
+    id: 'article-3',
+    title: 'Behind the Scenes: Creating Movie Trivia Master',
+    excerpt: 'Learn about the development process behind our most popular game, including the challenges we faced and lessons learned.',
+    content: `# Behind the Scenes: Creating Movie Trivia Master
+
+Take a journey with us behind the scenes of creating Movie Trivia Master, our most popular and beloved game. From initial concept to launch, here's the story of how this game came to be.
+
+## The Beginning
+
+It all started with a simple question: "How can we make movie trivia more engaging and accessible?" Our team spent months researching what makes trivia games fun and addictive.
+
+### Initial Research
+- **Player Surveys**: We surveyed over 10,000 potential players
+- **Competitor Analysis**: Studied successful trivia apps and games
+- **Market Research**: Identified gaps in the movie trivia space
+
+## Development Challenges
+
+### 🎬 Content Creation
+Creating a comprehensive movie database was our biggest challenge:
+- **10,000+ Questions**: Covering movies from 1920s to present
+- **Multiple Difficulty Levels**: From easy to expert questions
+- **Regular Updates**: Adding new movies and questions monthly
+
+### 🎮 Technical Hurdles
+- **Real-time Multiplayer**: Ensuring fair and lag-free gameplay
+- **Content Moderation**: Preventing spoilers and inappropriate content
+- **Scalability**: Handling thousands of concurrent players
+
+### 🎨 Design Decisions
+- **Intuitive UI**: Making complex trivia simple and fun
+- **Accessibility**: Ensuring the game works for all players
+- **Mobile Optimization**: Perfecting the mobile experience
+
+## Key Features We Added
+
+### 🤝 Social Features
+- **Friend Challenges**: Play with friends anytime
+- **Leaderboards**: Compete globally and locally
+- **Achievements**: Unlock rewards for milestones
+
+### 🎯 Game Modes
+- **Classic Trivia**: Traditional question-and-answer format
+- **Speed Rounds**: Fast-paced, time-limited rounds
+- **Tournament Mode**: Competitive bracket-style play
+- **Daily Challenges**: New content every day
+
+## Lessons Learned
+
+### What Worked Well
+- **Community Feedback**: Regular player input shaped the game
+- **Iterative Development**: Small, frequent updates over big releases
+- **Quality over Quantity**: Focusing on polished experience
+
+### What We Improved
+- **Performance**: Optimized for better loading times
+- **Balance**: Adjusted difficulty curves based on player data
+- **Monetization**: Fair and player-friendly reward systems
+
+## Future Plans
+
+We're not done yet! Here's what's coming next:
+- **New Categories**: Expand beyond movies to TV shows and celebrities
+- **AI-Powered Questions**: Dynamic question generation
+- **Cross-Platform Play**: Play seamlessly across all devices
+- **Advanced Analytics**: Better player insights and recommendations
+
+Thank you to our amazing community for making Movie Trivia Master such a success. We can't wait to continue this journey with you! 🎉`,
+    author: {
+      id: 'author-3',
+      name: 'Lead Developer',
+      avatar: 'https://picsum.photos/seed/dev/100/100',
+      role: 'Lead Developer',
+      bio: 'Full-stack developer passionate about creating engaging gaming experiences.'
+    },
+    publishedAt: '2024-01-12T09:15:00Z',
+    category: 'features',
+    tags: ['development', 'trivia', 'behind-scenes', 'game-design'],
+    image: 'https://picsum.photos/seed/news3/800/400',
+    thumbnail: 'https://picsum.photos/seed/news3/400/200',
+    featured: false,
+    views: 3120,
+    likes: 234,
+    likedBy: ['user-1', 'user-2', 'user-3', 'user-4', 'user-5'],
+    readTime: 5,
+    comments: [
+      {
+        id: 'comment-3',
+        userId: 'user-3',
+        username: 'DevFan',
+        avatar: 'https://picsum.photos/seed/user3/50/50',
+        content: 'Fascinating insight into the development process! Love the attention to detail.',
+        createdAt: '2024-01-12T14:20:00Z',
+        likes: 15,
+        likedBy: ['user-1', 'user-2']
+      }
+    ],
+    relatedArticles: ['article-1', 'article-5'],
+    isPublished: true
+  }
+]
+
+const mockCategories: NewsCategory[] = [
+  {
+    id: 'announcements',
+    name: 'Announcements',
+    description: 'Major updates and new features',
+    icon: '📢',
+    color: 'bg-red-600',
+    articleCount: 15
+  },
+  {
+    id: 'updates',
+    name: 'Updates',
+    description: 'Patch notes and bug fixes',
+    icon: '🔧',
+    color: 'bg-blue-600',
+    articleCount: 23
+  },
+  {
+    id: 'features',
+    name: 'Features',
+    description: 'New features and game content',
+    icon: '✨',
+    color: 'bg-green-600',
+    articleCount: 18
+  },
+  {
+    id: 'events',
+    name: 'Events',
+    description: 'Tournaments and special events',
+    icon: '🎉',
+    color: 'bg-purple-600',
+    articleCount: 12
+  },
+  {
+    id: 'community',
+    name: 'Community',
+    description: 'Community highlights and stories',
+    icon: '👥',
+    color: 'bg-yellow-600',
+    articleCount: 9
+  }
+]
+
+const initialState: NewsState = {
+  articles: mockArticles,
+  categories: mockCategories,
+  featuredArticles: mockArticles.filter(article => article.featured),
+  currentArticle: null,
+  loading: false,
+  error: null,
+  filters: {
+    category: 'all',
+    search: '',
+    sortBy: 'newest',
+    dateRange: 'all'
+  },
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: mockArticles.length,
+    hasMore: false
+  },
+  userInteractions: {
+    likedArticles: [],
+    bookmarkedArticles: [],
+    readArticles: []
+  },
+  trending: mockArticles.slice(0, 3),
+  recent: mockArticles.slice(0, 5)
+}
+
+const newsSlice = createSlice({
+  name: 'news',
+  initialState,
+  reducers: {
+    setCurrentArticle: (state, action: PayloadAction<NewsArticle | null>) => {
+      state.currentArticle = action.payload
+      if (action.payload) {
+        // Mark as read
+        if (!state.userInteractions.readArticles.includes(action.payload.id)) {
+          state.userInteractions.readArticles.push(action.payload.id)
+        }
+        // Increment view count
+        const article = state.articles.find(a => a.id === action.payload!.id)
+        if (article) {
+          article.views += 1
+        }
+      }
+    },
+    likeArticle: (state, action: PayloadAction<{ articleId: string; userId: string }>) => {
+      const { articleId, userId } = action.payload
+      const article = state.articles.find(a => a.id === articleId)
+      if (article) {
+        const isLiked = article.likedBy.includes(userId)
+        if (isLiked) {
+          article.likedBy = article.likedBy.filter(id => id !== userId)
+          article.likes -= 1
+          state.userInteractions.likedArticles = state.userInteractions.likedArticles.filter(id => id !== articleId)
+        } else {
+          article.likedBy.push(userId)
+          article.likes += 1
+          state.userInteractions.likedArticles.push(articleId)
+        }
+      }
+    },
+    bookmarkArticle: (state, action: PayloadAction<string>) => {
+      const articleId = action.payload
+      const isBookmarked = state.userInteractions.bookmarkedArticles.includes(articleId)
+      if (isBookmarked) {
+        state.userInteractions.bookmarkedArticles = state.userInteractions.bookmarkedArticles.filter(id => id !== articleId)
+      } else {
+        state.userInteractions.bookmarkedArticles.push(articleId)
+      }
+    },
+    setFilters: (state, action: PayloadAction<Partial<NewsState['filters']>>) => {
+      state.filters = { ...state.filters, ...action.payload }
+    },
+    addComment: (state, action: PayloadAction<{ articleId: string; comment: Omit<NewsComment, 'id' | 'createdAt' | 'likes' | 'likedBy'> }>) => {
+      const { articleId, comment } = action.payload
+      const article = state.articles.find(a => a.id === articleId)
+      if (article) {
+        const newComment: NewsComment = {
+          ...comment,
+          id: `comment-${Date.now()}`,
+          createdAt: new Date().toISOString(),
+          likes: 0,
+          likedBy: []
+        }
+        article.comments.push(newComment)
+      }
+    },
+    likeComment: (state, action: PayloadAction<{ commentId: string; userId: string; articleId: string }>) => {
+      const { commentId, userId, articleId } = action.payload
+      const article = state.articles.find(a => a.id === articleId)
+      if (article) {
+        const comment = article.comments.find(c => c.id === commentId)
+        if (comment) {
+          const isLiked = comment.likedBy.includes(userId)
+          if (isLiked) {
+            comment.likedBy = comment.likedBy.filter(id => id !== userId)
+            comment.likes -= 1
+          } else {
+            comment.likedBy.push(userId)
+            comment.likes += 1
+          }
+        }
+      }
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload
+    },
+    loadMoreArticles: (state) => {
+      // Simulate loading more articles
+      state.pagination.page += 1
+      state.pagination.hasMore = state.pagination.page < 5 // Simulate 5 pages total
+    }
+  }
+})
+
+export const {
+  setCurrentArticle,
+  likeArticle,
+  bookmarkArticle,
+  setFilters,
+  addComment,
+  likeComment,
+  setLoading,
+  setError,
+  loadMoreArticles
+} = newsSlice.actions
+
+export default newsSlice.reducer</content>

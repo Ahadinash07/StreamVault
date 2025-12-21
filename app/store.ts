@@ -16,6 +16,8 @@ import notificationsReducer from './features/notifications/notificationsSlice'
 import gamingReducer from './features/gaming/gamingSlice'
 import contentReducer from './features/content/contentSlice'
 import contentSectionsReducer from './features/contentSections/contentSectionsSlice'
+import newsReducer from './features/news/newsSlice'
+import streamsReducer from './features/streams/streamsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +38,8 @@ export const store = configureStore({
     settings: settingsReducer,
     notifications: notificationsReducer,
     gaming: gamingReducer,
+    news: newsReducer,
+    streams: streamsReducer,
   },
 })
 

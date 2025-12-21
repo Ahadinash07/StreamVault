@@ -455,29 +455,129 @@ export default function GamingPage() {
                   <FiAward className="w-5 h-5 mr-2" />
                   View Leaderboard
                 </button>
+                <Link
+                  href="/gaming/news"
+                  className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25"
+                >
+                  <FiTrendingUp className="w-5 h-5 mr-2" />
+                  Latest News
+                </Link>
+                <Link
+                  href="/gaming/streams"
+                  className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/25"
+                >
+                  <FiPlay className="w-5 h-5 mr-2" />
+                  Live Streams
+                </Link>
               </div>
             </motion.div>
           </div>
+        </div>
+
+        {/* Quick Access Section */}
+        <div className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+          >
+            <Link
+              href="/gaming/news"
+              className="group relative overflow-hidden bg-gradient-to-br from-blue-900/20 to-purple-900/20 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-6 hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <FiTrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">Gaming News</h3>
+                    <p className="text-gray-400 text-sm">Latest updates & announcements</p>
+                  </div>
+                </div>
+                <p className="text-gray-300 mb-4">Stay updated with the latest gaming news, feature announcements, tournament results, and community highlights.</p>
+                <div className="flex items-center text-blue-400 font-semibold group-hover:text-blue-300 transition-colors">
+                  <span>Read Latest News</span>
+                  <FiChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/gaming/streams"
+              className="group relative overflow-hidden bg-gradient-to-br from-red-900/20 to-pink-900/20 backdrop-blur-sm rounded-2xl border border-red-500/30 p-6 hover:border-red-400/50 transition-all duration-300 hover:scale-105"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-red-900/10 to-pink-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-pink-600 rounded-xl flex items-center justify-center">
+                    <FiPlay className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white group-hover:text-red-300 transition-colors">Live Streams</h3>
+                    <p className="text-gray-400 text-sm">Watch live gaming content</p>
+                  </div>
+                </div>
+                <p className="text-gray-300 mb-4">Join live streams featuring gaming tournaments, creative content, community events, and interactive experiences.</p>
+                <div className="flex items-center text-red-400 font-semibold group-hover:text-red-300 transition-colors">
+                  <span>Watch Live Now</span>
+                  <FiChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+          </motion.div>
         </div>
 
         {/* Navigation Tabs */}
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-center mb-8">
             <div className="bg-dark-100 rounded-lg p-1 flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => dispatch(setActiveTab(tab.id))}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-md transition-colors whitespace-nowrap flex-shrink-0 ${
-                    activeTab === tab.id
-                      ? 'bg-purple-600 text-white'
-                      : 'text-gray-300 hover:bg-dark-200'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              ))}
+              {tabs.map((tab) => {
+                // Special handling for news and streams - make them navigation links
+                if (tab.id === 'news') {
+                  return (
+                    <Link
+                      key={tab.id}
+                      href="/gaming/news"
+                      className="flex items-center gap-2 px-6 py-3 rounded-md transition-colors whitespace-nowrap flex-shrink-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-500 hover:to-purple-500 shadow-lg hover:shadow-xl hover:shadow-blue-500/25"
+                    >
+                      <tab.icon className="w-4 h-4" />
+                      {tab.label}
+                    </Link>
+                  )
+                }
+
+                if (tab.id === 'streams') {
+                  return (
+                    <Link
+                      key={tab.id}
+                      href="/gaming/streams"
+                      className="flex items-center gap-2 px-6 py-3 rounded-md transition-colors whitespace-nowrap flex-shrink-0 bg-gradient-to-r from-red-600 to-pink-600 text-white hover:from-red-500 hover:to-pink-500 shadow-lg hover:shadow-xl hover:shadow-red-500/25"
+                    >
+                      <tab.icon className="w-4 h-4" />
+                      {tab.label}
+                    </Link>
+                  )
+                }
+
+                // Regular tabs remain as buttons
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => dispatch(setActiveTab(tab.id))}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-md transition-colors whitespace-nowrap flex-shrink-0 ${
+                      activeTab === tab.id
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-300 hover:bg-dark-200'
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
