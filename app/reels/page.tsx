@@ -5,7 +5,7 @@ import { useAppSelector, useAppDispatch } from '../hooks'
 import { setCurrentReel, togglePlayPause, likeReel, markReelWatched, shareReel } from '../features/reels/reelsSlice'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { FiHeart, FiMessageCircle, FiShare, FiPlay, FiPause, FiVolume2, FiVolumeX, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+import { FiHeart, FiMessageCircle, FiShare, FiPlay, FiPause, FiVolume2, FiVolumeX, FiX } from 'react-icons/fi'
 import { Reel } from '@/types/content'
 
 export default function ReelsPage() {
@@ -13,23 +13,18 @@ export default function ReelsPage() {
   const { reels, currentReel, isPlaying, likedReels } = useAppSelector((state) => state.reels)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isMuted, setIsMuted] = useState(true)
-  const [showControls, setShowControls] = useState(false)
-  const [isFullscreen, setIsFullscreen] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const touchStartY = useRef<number>(0)
   const touchEndY = useRef<number>(0)
 
-  // Filter reels for display
   const displayReels = reels
 
   // Auto-play logic
   useEffect(() => {
     if (currentReel && videoRef.current) {
       if (isPlaying) {
-        videoRef.current.play().catch(() => {
-          // Handle autoplay restrictions
-        })
+        videoRef.current.play().catch(() => {})
       } else {
         videoRef.current.pause()
       }
@@ -44,13 +39,12 @@ export default function ReelsPage() {
           goToNextReel()
         }
       }
-
       videoRef.current.addEventListener('ended', handleEnded)
       return () => videoRef.current?.removeEventListener('ended', handleEnded)
     }
   }, [currentIndex, displayReels])
 
-  // Intersection Observer for auto-play
+  // Intersection Observer for mobile auto-play
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -111,7 +105,6 @@ export default function ReelsPage() {
     }
   }
 
-  // Touch handlers for swipe navigation
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY
   }
@@ -120,7 +113,7 @@ export default function ReelsPage() {
     touchEndY.current = e.changedTouches[0].clientY
     const diff = touchStartY.current - touchEndY.current
 
-    if (Math.abs(diff) > 50) { // Minimum swipe distance
+    if (Math.abs(diff) > 50) {
       if (diff > 0) {
         goToNextReel()
       } else {
@@ -144,13 +137,12 @@ export default function ReelsPage() {
     return views.toString()
   }
 
-  // Mobile-first responsive design
   return (
     <div className="min-h-screen bg-black">
-      <Header />
-      <main className="pt-16 md:pt-20">
-        {/* Desktop Layout */}
-        <div className="hidden md:block">
+      {/* Desktop View */}
+      <div className="hidden md:block">
+        <Header />
+        <main className="pt-16 md:pt-20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="mb-8">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Reels</h1>
@@ -208,10 +200,11 @@ export default function ReelsPage() {
                 ))}
               </div>
 
-              {/* Video Player */}
+              {/* Main Reel Player */}
               <div className="lg:col-span-3">
                 {currentReel ? (
-                  <div className="sticky top-24">
+                  <div className="relative">
+                    {/* Video Container */}
                     <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-4">
                       <video
                         ref={videoRef}
@@ -237,32 +230,53 @@ export default function ReelsPage() {
                         </button>
                       </div>
 
-                      {/* Top Controls */}
-                      <div className="absolute top-4 right-4 flex gap-2">
+                      {/* Mute Button */}
+                      <div className="absolute top-4 right-4">
                         <button
                           onClick={toggleMute}
                           className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                          aria-label={isMuted ? "Unmute video" : "Mute video"}
                         >
                           {isMuted ? <FiVolumeX className="w-5 h-5" /> : <FiVolume2 className="w-5 h-5" />}
                         </button>
                       </div>
 
-                      {/* Bottom Info */}
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <h2 className="text-white font-semibold text-lg mb-2">{currentReel.title}</h2>
-                        <p className="text-gray-300 text-sm mb-2">{currentReel.description}</p>
-                        <div className="flex items-center gap-4 text-sm text-gray-400">
-                          <span>{currentReel.creator}</span>
-                          <span>•</span>
-                          <span>{formatViews(currentReel.views)} views</span>
-                          <span>•</span>
-                          <span>{new Date(currentReel.uploadDate).toLocaleDateString()}</span>
+                      {/* Bottom Caption */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6">
+                        <div className="max-w-2xl">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-white font-semibold text-sm">{currentReel.creator}</span>
+                            <span className="text-gray-300 text-sm">•</span>
+                            <span className="text-gray-300 text-sm">{formatViews(currentReel.views)} views</span>
+                          </div>
+
+                          <p className="text-white text-sm mb-3 line-clamp-2">{currentReel.description}</p>
+
+                          {/* Tags */}
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {currentReel.tags.slice(0, 3).map((tag) => (
+                              <span
+                                key={tag}
+                                className="px-2 py-1 bg-white/20 text-white rounded-full text-xs"
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+
+                          {/* Related Content */}
+                          {currentReel.relatedContent && (
+                            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2">
+                              <p className="text-gray-300 text-xs mb-1">Related to</p>
+                              <p className="text-white font-medium text-sm">{currentReel.relatedContent.title}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex items-center justify-between mb-6">
+                    {/* Action Buttons Row */}
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-6">
                         <button
                           onClick={() => handleLike(currentReel.id)}
@@ -289,25 +303,6 @@ export default function ReelsPage() {
                           <span>Share</span>
                         </button>
                       </div>
-
-                      {currentReel.relatedContent && (
-                        <div className="text-right">
-                          <p className="text-gray-400 text-sm">Related to</p>
-                          <p className="text-white font-medium">{currentReel.relatedContent.title}</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {currentReel.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-3 py-1 bg-dark-100 text-gray-300 rounded-full text-sm hover:bg-dark-200 transition-colors cursor-pointer"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
                     </div>
                   </div>
                 ) : (
@@ -320,240 +315,153 @@ export default function ReelsPage() {
                 )}
               </div>
             </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
 
-            {/* Trending Section */}
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold text-white mb-6">Trending Now</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {reels
-                  .filter(reel => reel.isTrending)
-                  .slice(0, 12)
-                  .map((reel) => (
-                    <div
-                      key={reel.id}
-                      onClick={() => {
-                        const index = displayReels.indexOf(reel)
-                        setCurrentIndex(index)
-                        dispatch(setCurrentReel(reel))
-                        dispatch(markReelWatched(reel.id))
-                      }}
-                      className="cursor-pointer group"
-                    >
-                      <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
-                        <img
-                          src={reel.thumbnail}
-                          alt={reel.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <FiPlay className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="absolute top-1 right-1 bg-red-600 text-white text-xs px-1 py-0.5 rounded">
-                          🔥
-                        </div>
-                      </div>
-                      <h3 className="text-white text-sm font-medium line-clamp-2 mb-1">{reel.title}</h3>
-                      <p className="text-gray-400 text-xs">{formatViews(reel.views)} views</p>
-                    </div>
-                  ))}
-              </div>
-            </div>
+      {/* Mobile View - Full Screen Reels */}
+      <div className="md:hidden fixed inset-0 bg-black z-50">
+        {/* Mobile Header */}
+        <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/80 to-transparent p-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => window.history.back()}
+              className="w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white"
+              aria-label="Close reels"
+            >
+              <FiX className="w-5 h-5" />
+            </button>
+            <h1 className="text-white font-semibold text-lg">Reels</h1>
+            <button
+              onClick={toggleMute}
+              className="w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white"
+              aria-label={isMuted ? "Unmute" : "Mute"}
+            >
+              {isMuted ? <FiVolumeX className="w-5 h-5" /> : <FiVolume2 className="w-5 h-5" />}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Layout - Full Screen Vertical Scrolling */}
-        <div className="md:hidden">
-          <div className="fixed inset-0 bg-black z-50">
-            {/* Mobile Header */}
-            <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-4">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => window.history.back()}
-                  className="w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white"
-                  aria-label="Close reels"
-                >
-                  <FiX className="w-5 h-5" />
-                </button>
-                <h1 className="text-white font-semibold">Reels</h1>
-                <div className="w-8" /> {/* Spacer */}
-              </div>
-            </div>
-
-            {/* Reels Container */}
+        {/* Reels Container */}
+        <div
+          ref={containerRef}
+          className="h-full overflow-y-auto snap-y snap-mandatory"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {displayReels.map((reel, index) => (
             <div
-              ref={containerRef}
-              className="h-full overflow-y-auto snap-y snap-mandatory"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
+              key={reel.id}
+              data-index={index}
+              className="h-screen w-screen snap-start relative flex items-center justify-center bg-black"
             >
-              {displayReels.map((reel, index) => (
-                <div
-                  key={reel.id}
-                  data-index={index}
-                  className="h-screen snap-start relative flex items-center justify-center"
-                >
-                  {/* Video Background */}
-                  <video
-                    ref={index === currentIndex ? videoRef : null}
-                    src={reel.videoUrl}
-                    poster={reel.thumbnail}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    muted={isMuted}
-                    playsInline
-                    loop
-                    autoPlay={index === currentIndex}
-                  />
+              {/* Video Background */}
+              <video
+                ref={index === currentIndex ? videoRef : null}
+                src={reel.videoUrl}
+                poster={reel.thumbnail}
+                className="absolute inset-0 w-full h-full object-cover"
+                muted={isMuted}
+                playsInline
+                loop
+                autoPlay={index === currentIndex}
+                onClick={() => dispatch(togglePlayPause())}
+              />
 
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/20" />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
 
-                  {/* Content Overlay */}
-                  <div className="relative z-10 w-full h-full flex">
-                    {/* Left Side - Action Buttons */}
-                    <div className="w-16 flex flex-col items-center justify-end pb-20 space-y-6 mr-4">
-                      <button
-                        onClick={() => handleLike(reel.id)}
-                        className={`p-2 rounded-full transition-colors ${
-                          likedReels.includes(reel.id)
-                            ? 'text-red-500'
-                            : 'text-white hover:text-red-500'
-                        }`}
-                        aria-label="Like this reel"
-                      >
-                        <FiHeart className={`w-7 h-7 ${likedReels.includes(reel.id) ? 'fill-current' : ''}`} />
-                      </button>
-                      <div className="text-white text-xs text-center">
-                        <div className="font-semibold">{reel.likes}</div>
-                        <div className="text-gray-300">likes</div>
-                      </div>
+              {/* Trending Badge */}
+              {reel.isTrending && (
+                <div className="absolute top-20 right-4 z-10 bg-red-600 text-white text-xs px-3 py-1.5 rounded-full font-bold shadow-lg">
+                  🔥 TRENDING
+                </div>
+              )}
 
-                      <button
-                        onClick={() => {/* Comments */}}
-                        className="p-2 rounded-full text-white hover:text-blue-500 transition-colors"
-                        aria-label="View comments"
-                      >
-                        <FiMessageCircle className="w-7 h-7" />
-                      </button>
-                      <div className="text-white text-xs text-center">
-                        <div className="font-semibold">42</div>
-                        <div className="text-gray-300">comments</div>
-                      </div>
+              {/* Right Side - Action Buttons */}
+              <div className="absolute right-3 bottom-32 z-10 flex flex-col items-center space-y-6">
+                <div className="flex flex-col items-center">
+                  <button
+                    onClick={() => handleLike(reel.id)}
+                    className={`p-3 rounded-full transition-all ${
+                      likedReels.includes(reel.id)
+                        ? 'text-red-500 bg-red-500/10'
+                        : 'text-white bg-black/30'
+                    }`}
+                    aria-label="Like this reel"
+                  >
+                    <FiHeart className={`w-7 h-7 ${likedReels.includes(reel.id) ? 'fill-current' : ''}`} />
+                  </button>
+                  <span className="text-white text-xs mt-1.5 font-semibold">{reel.likes}</span>
+                </div>
 
-                      <button
-                        onClick={() => handleShare(reel.id)}
-                        className="p-2 rounded-full text-white hover:text-green-500 transition-colors"
-                        aria-label="Share this reel"
-                      >
-                        <FiShare className="w-7 h-7" />
-                      </button>
-                      <div className="text-white text-xs text-center">
-                        <div className="font-semibold">Share</div>
-                      </div>
-                    </div>
+                <div className="flex flex-col items-center">
+                  <button
+                    className="p-3 rounded-full text-white bg-black/30 transition-all"
+                    aria-label="View comments"
+                  >
+                    <FiMessageCircle className="w-7 h-7" />
+                  </button>
+                  <span className="text-white text-xs mt-1.5 font-semibold">42</span>
+                </div>
 
-                    {/* Center - Video Info */}
-                    <div className="flex-1 flex flex-col justify-end pb-20 px-4">
-                      <div className="text-white">
-                        <h2 className="font-bold text-lg mb-2">{reel.title}</h2>
-                        <p className="text-gray-200 text-sm mb-3 line-clamp-2">{reel.description}</p>
-                        <div className="flex items-center gap-2 text-sm text-gray-300 mb-3">
-                          <span className="font-medium">{reel.creator}</span>
-                          <span>•</span>
-                          <span>{formatViews(reel.views)} views</span>
-                        </div>
+                <div className="flex flex-col items-center">
+                  <button
+                    onClick={() => handleShare(reel.id)}
+                    className="p-3 rounded-full text-white bg-black/30 transition-all"
+                    aria-label="Share this reel"
+                  >
+                    <FiShare className="w-7 h-7" />
+                  </button>
+                  <span className="text-white text-xs mt-1.5 font-semibold">Share</span>
+                </div>
+              </div>
 
-                        {/* Tags */}
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {reel.tags.slice(0, 3).map((tag) => (
-                            <span
-                              key={tag}
-                              className="px-2 py-1 bg-white/20 text-white rounded-full text-xs"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-
-                        {/* Related Content */}
-                        {reel.relatedContent && (
-                          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 mb-4">
-                            <p className="text-gray-300 text-xs mb-1">Related to</p>
-                            <p className="text-white font-medium text-sm">{reel.relatedContent.title}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Right Side - Navigation */}
-                    <div className="w-16 flex flex-col items-center justify-center space-y-4">
-                      <button
-                        onClick={goToPrevReel}
-                        disabled={index === 0}
-                        className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                        aria-label="Previous reel"
-                      >
-                        <FiChevronLeft className="w-4 h-4" />
-                      </button>
-                      <div className="text-white text-xs text-center">
-                        <div className="w-1 h-1 bg-white rounded-full mx-auto mb-1" />
-                        <div className="text-gray-400 text-xs">{index + 1}/{displayReels.length}</div>
-                      </div>
-                      <button
-                        onClick={goToNextReel}
-                        disabled={index === displayReels.length - 1}
-                        className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                        aria-label="Next reel"
-                      >
-                        <FiChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
+              {/* Bottom - Video Info & Caption */}
+              <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black via-black/70 to-transparent p-5 pb-6">
+                <div className="pr-16">
+                  {/* Creator & Stats */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-white font-semibold text-sm">{reel.creator}</span>
+                    <span className="text-gray-300 text-sm">•</span>
+                    <span className="text-gray-300 text-sm">{formatViews(reel.views)} views</span>
                   </div>
 
-                  {/* Progress Indicator */}
-                  <div className="absolute top-16 left-4 right-4">
-                    <div className="flex gap-1">
-                      {displayReels.map((_, i) => (
-                        <div
-                          key={i}
-                          className={`h-0.5 flex-1 rounded-full transition-colors ${
-                            i === index ? 'bg-white' : 'bg-white/30'
-                          }`}
-                        />
-                      ))}
-                    </div>
+                  {/* Title & Description */}
+                  <h2 className="text-white font-bold text-base mb-1.5">{reel.title}</h2>
+                  <p className="text-gray-200 text-sm mb-3 line-clamp-2">{reel.description}</p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {reel.tags.slice(0, 3).map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-xs"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
                   </div>
 
-                  {/* Trending Badge */}
-                  {reel.isTrending && (
-                    <div className="absolute top-20 right-4 bg-red-600 text-white text-xs px-2 py-1 rounded-full font-bold">
-                      🔥 TRENDING
+                  {/* Related Content */}
+                  {reel.relatedContent && (
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 inline-block">
+                      <p className="text-gray-300 text-xs mb-1">Related to</p>
+                      <p className="text-white font-medium text-sm">{reel.relatedContent.title}</p>
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
-
-            {/* Mobile Bottom Controls */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={toggleMute}
-                  className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white"
-                  aria-label={isMuted ? "Unmute video" : "Mute video"}
-                >
-                  {isMuted ? <FiVolumeX className="w-5 h-5" /> : <FiVolume2 className="w-5 h-5" />}
-                </button>
-                <div className="text-white text-center">
-                  <div className="text-sm font-medium">Tap to play/pause</div>
-                  <div className="text-xs text-gray-400">Swipe up/down to navigate</div>
-                </div>
-                <div className="w-10" /> {/* Spacer */}
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      </main>
-      <Footer />
+
+        {/* Bottom Instructions */}
+        <div className="absolute bottom-4 left-0 right-0 z-20 text-center pointer-events-none">
+          <p className="text-white/50 text-xs">Tap to play/pause • Swipe to navigate</p>
+        </div>
+      </div>
     </div>
   )
 }

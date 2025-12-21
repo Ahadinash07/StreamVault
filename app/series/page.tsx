@@ -262,106 +262,122 @@ export default function SeriesPage() {
             transition={{ delay: 0.1 }}
             className="sticky top-20 z-40 bg-black/95 backdrop-blur-md border border-dark-200 rounded-lg p-4 mb-8"
           >
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              {/* Tab Navigation */}
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-4">
+              {/* Tab Navigation - Mobile Scrollable */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-2">
                 {[
-                  { id: 'all', label: 'All Series' },
-                  { id: 'trending', label: 'Trending' },
-                  { id: 'top-rated', label: 'Top Rated' },
-                  { id: 'new-releases', label: 'New Releases' },
-                  { id: 'favorites', label: 'My Favorites' }
+                  { id: 'all', label: 'All Series', short: 'All' },
+                  { id: 'trending', label: 'Trending', short: 'Hot' },
+                  { id: 'top-rated', label: 'Top Rated', short: 'Top' },
+                  { id: 'new-releases', label: 'New Releases', short: 'New' },
+                  { id: 'favorites', label: 'My Favorites', short: 'Fav' }
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
+                    className={`px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm font-medium whitespace-nowrap flex-shrink-0 ${
                       activeTab === tab.id
                         ? 'bg-purple-600 text-white'
                         : 'text-gray-300 hover:bg-dark-200 hover:text-white'
                     }`}
                   >
-                    {tab.label}
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="sm:hidden">{tab.short}</span>
                   </button>
                 ))}
               </div>
 
               {/* Controls */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-2 flex-wrap">
                 {/* Mood Filter */}
-                <div className="relative">
+                <div className="relative w-full sm:w-auto">
                   <select
                     value={moodFilter}
                     onChange={(e) => setMoodFilter(e.target.value)}
-                    className="px-3 py-2 bg-dark-100 border border-dark-200 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500"
+                    className="w-full sm:w-auto px-3 py-2 bg-dark-100 border border-dark-200 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500"
                   >
                     <option value="">All Moods</option>
                     {moodOptions.map((mood) => (
-                      <option key={mood.id} value={mood.label}>
+                      <option key={mood.id} value={mood.id}>
                         {mood.label}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Sort */}
+                {/* Sort - Mobile Dropdown */}
                 <select
                   value={sortBy}
                   onChange={(e) => dispatch(setSortBy(e.target.value as SortOption))}
-                  className="px-3 py-2 bg-dark-100 border border-dark-200 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500"
+                  className="px-3 py-2 bg-dark-100 border border-dark-200 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500 w-full sm:w-auto"
                 >
                   {sortOptions.map((option) => (
-                    <option key={option.value} value={option.label}>
+                    <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
                   ))}
                 </select>
 
                 {/* View Mode */}
-                <div className="flex bg-dark-100 rounded-lg p-1">
+                <div className="flex bg-dark-100 rounded-lg p-1 w-full sm:w-auto justify-center sm:justify-start">
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded ${viewMode === 'grid' ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                    className={`flex-1 sm:flex-none p-2 rounded transition-colors ${
+                      viewMode === 'grid'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-dark-200'
+                    }`}
                     title="Grid View"
                   >
                     <FiGrid className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`p-2 rounded ${viewMode === 'list' ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                    className={`flex-1 sm:flex-none p-2 rounded transition-colors ${
+                      viewMode === 'list'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-dark-200'
+                    }`}
                     title="List View"
                   >
                     <FiList className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setViewMode('compact')}
-                    className={`p-2 rounded ${viewMode === 'compact' ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                    className={`hidden sm:flex p-2 rounded transition-colors ${
+                      viewMode === 'compact'
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-400 hover:text-white hover:bg-dark-200'
+                    }`}
                     title="Compact View"
                   >
                     <FiTrendingUp className="w-4 h-4" />
                   </button>
                 </div>
 
-                {/* Filters Toggle */}
-                <button
-                  onClick={() => dispatch(setShowFilters(!showFilters))}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                    showFilters ? 'bg-purple-600 text-white' : 'bg-dark-100 text-gray-300 hover:bg-dark-200'
-                  }`}
-                >
-                  <FiFilter className="w-4 h-4" />
-                  <span className="hidden sm:inline">Filters</span>
-                </button>
+                {/* Action Buttons */}
+                <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-start">
+                  <button
+                    onClick={() => dispatch(setShowFilters(!showFilters))}
+                    className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm flex-1 sm:flex-none ${
+                      showFilters
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-dark-100 text-gray-300 hover:bg-dark-200'
+                    }`}
+                  >
+                    <FiFilter className="w-4 h-4" />
+                    <span className="hidden sm:inline">Filters</span>
+                  </button>
 
-                {/* Refresh */}
-                <button
-                  onClick={handleRefresh}
-                  disabled={isRefreshing}
-                  className="p-2 bg-dark-100 hover:bg-dark-200 rounded-lg transition-colors disabled:opacity-50"
-                  title="Refresh Content"
-                >
-                  <FiRefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                </button>
+                  <button
+                    onClick={handleRefresh}
+                    disabled={isRefreshing}
+                    className="p-2 bg-dark-100 hover:bg-dark-200 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
+                    title="Refresh Content"
+                  >
+                    <FiRefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -536,10 +552,10 @@ export default function SeriesPage() {
               layout
               className={
                 viewMode === 'grid'
-                  ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6'
+                  ? 'grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6'
                   : viewMode === 'list'
-                  ? 'space-y-4'
-                  : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                  ? 'space-y-3 sm:space-y-4'
+                  : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4'
               }
             >
               {filteredSeries.map((s, index) => (

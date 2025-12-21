@@ -68,15 +68,15 @@ if (typeof window !== 'undefined') {
       id: 'notif-3',
       type: 'content_update' as const,
       title: 'New Episode Available',
-      message: 'Season 2 Episode 3 of "Stranger Things" is now available',
+      message: 'Season 2 Episode 3 of "Breaking Bad" is now available',
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), // 4 hours ago
       isRead: true,
-      actionUrl: '/series/1',
+      actionUrl: '/series/s1',
       actionText: 'Watch Now',
       relatedContent: {
         type: 'series' as const,
-        id: '1',
-        title: 'Stranger Things'
+        id: 's1',
+        title: 'Breaking Bad'
       }
     },
     {

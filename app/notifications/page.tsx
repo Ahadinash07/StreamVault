@@ -245,9 +245,13 @@ export default function NotificationsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h3 className="text-white font-semibold text-lg mb-1">
+                          <Link
+                            href={`/notifications/${notification.id}`}
+                            className="text-white font-semibold text-lg mb-1 hover:text-blue-400 transition-colors"
+                            onClick={() => handleMarkAsRead(notification.id)}
+                          >
                             {notification.title}
-                          </h3>
+                          </Link>
                           <p className="text-gray-300 mb-2">
                             {notification.message}
                           </p>
