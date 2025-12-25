@@ -187,7 +187,7 @@ export default function MoviesPage() {
       action: () => {
         navigator.share?.({
           title: movie.title,
-          text: `Check out ${movie.title} on Aurora Play!`,
+          text: `Check out ${movie.title} on StreamVault!`,
           url: `${window.location.origin}/movies/${movie.id}`
         }) || navigator.clipboard.writeText(`${window.location.origin}/movies/${movie.id}`)
         dispatch(addNotification({

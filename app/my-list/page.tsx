@@ -175,7 +175,7 @@ export default function MyListPage() {
       action: () => {
         navigator.share?.({
           title: item.title,
-          text: `Check out ${item.title} on Aurora Play!`,
+          text: `Check out ${item.title} on StreamVault!`,
           url: `${window.location.origin}/${item.type === 'movie' ? 'movies' : 'series'}/${item.id}`
         }) || navigator.clipboard.writeText(`${window.location.origin}/${item.type === 'movie' ? 'movies' : 'series'}/${item.id}`)
         dispatch(addNotification({

@@ -161,7 +161,7 @@ const mockAchievements: Achievement[] = [
   {
     id: 'early-adopter',
     title: 'Early Adopter',
-    description: 'Play Aurora Gaming on launch day',
+    description: 'Play StreamVault Gaming on launch day',
     icon: '🚀',
     category: 'special',
     rarity: 'epic',

@@ -53,7 +53,7 @@ const mockArticles: NewsArticle[] = [
     excerpt: 'We\'re excited to announce a complete overhaul of our tournament system with new formats, bigger prizes, and enhanced matchmaking.',
     content: 'Full article content here...',
     author: {
-      name: 'Aurora Team',
+      name: 'StreamVault Team',
       avatar: 'https://picsum.photos/seed/team/100/100',
       role: 'Game Director'
     },
@@ -221,7 +221,7 @@ export default function GamingNewsPage() {
                 transition={{ delay: 0.2 }}
                 className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed"
               >
-                Stay ahead of the curve with the latest Aurora Gaming news, exclusive updates, and groundbreaking features
+                Stay ahead of the curve with the latest StreamVault Gaming news, exclusive updates, and groundbreaking features
               </motion.p>
 
               <motion.div

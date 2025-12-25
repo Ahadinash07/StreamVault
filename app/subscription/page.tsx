@@ -80,7 +80,7 @@ export default function SubscriptionPage() {
                 Choose Your Plan
               </h1>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-                Unlock unlimited entertainment with Aurora Play. Choose the perfect plan for you and your family.
+                Unlock unlimited entertainment with StreamVault. Choose the perfect plan for you and your family.
               </p>
 
               {subscription && (

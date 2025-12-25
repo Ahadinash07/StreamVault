@@ -187,7 +187,7 @@ export default function SeriesPage() {
       action: () => {
         navigator.share?.({
           title: s.title,
-          text: `Check out ${s.title} on Aurora Play!`,
+          text: `Check out ${s.title} on StreamVault!`,
           url: `${window.location.origin}/series/${s.id}`
         }) || navigator.clipboard.writeText(`${window.location.origin}/series/${s.id}`)
         dispatch(addNotification({

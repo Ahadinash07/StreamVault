@@ -417,7 +417,7 @@ export default function GamingPage() {
               <div className="flex items-center justify-center gap-3 mb-6">
                 <FiPlay className="w-12 h-12 text-purple-400" />
                 <h1 className="text-4xl md:text-6xl font-bold text-white">
-                  Aurora Gaming
+                  StreamVault Gaming
                 </h1>
               </div>
 
@@ -1094,7 +1094,7 @@ export default function GamingPage() {
                     </div>
                     <div className="p-4">
                       <h3 className="text-lg font-bold text-white mb-2">Gaming Update #{item}</h3>
-                      <p className="text-gray-400 text-sm mb-3">Exciting new features and improvements coming to Aurora Play gaming.</p>
+                      <p className="text-gray-400 text-sm mb-3">Exciting new features and improvements coming to StreamVault gaming.</p>
                       <div className="flex items-center justify-between text-xs text-gray-500">
                         <span>2 hours ago</span>
                         <span className="bg-purple-600/20 text-purple-400 px-2 py-1 rounded">News</span>
@@ -1131,7 +1131,7 @@ export default function GamingPage() {
                     </div>
                     <div className="p-4">
                       <h3 className="text-lg font-bold text-white mb-2">Stream #{stream}</h3>
-                      <p className="text-gray-400 text-sm mb-3">Watch this amazing gaming session live on Aurora Play.</p>
+                      <p className="text-gray-400 text-sm mb-3">Watch this amazing gaming session live on StreamVault.</p>
                       <div className="flex items-center justify-between text-xs text-gray-500">
                         <span>1.2K viewers</span>
                         <span className="bg-red-600/20 text-red-400 px-2 py-1 rounded">Live</span>

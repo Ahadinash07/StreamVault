@@ -40,7 +40,7 @@ export default function NotificationsPage() {
         {
           id: 'notif-1',
           type: 'info' as const,
-          title: 'Welcome to Aurora Play!',
+          title: 'Welcome to StreamVault!',
           message: 'Thanks for joining our community. Discover amazing movies, series, and gaming content.',
           timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 minutes ago
           isRead: false,
@@ -48,8 +48,8 @@ export default function NotificationsPage() {
           actionText: 'Explore Now',
           sender: {
             id: 'system',
-            name: 'Aurora Play',
-            avatar: 'https://picsum.photos/seed/aurora/100/100'
+            name: 'StreamVault',
+            avatar: 'https://picsum.photos/seed/streamvault/100/100'
           }
         },
         {
@@ -63,7 +63,7 @@ export default function NotificationsPage() {
           actionText: 'View Achievements',
           sender: {
             id: 'system',
-            name: 'Aurora Play',
+            name: 'StreamVault',
             avatar: 'https://picsum.photos/seed/achievement/100/100'
           }
         },
@@ -71,7 +71,7 @@ export default function NotificationsPage() {
           id: 'notif-3',
           type: 'friend_request' as const,
           title: 'New Friend Request',
-          message: 'MovieBuff2024 wants to be your friend on Aurora Play.',
+          message: 'MovieBuff2024 wants to be your friend on StreamVault.',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), // 4 hours ago
           isRead: true,
           actionUrl: '/profile',
@@ -113,7 +113,7 @@ export default function NotificationsPage() {
           actionText: 'Watch Now',
           sender: {
             id: 'system',
-            name: 'Aurora Play',
+            name: 'StreamVault',
             avatar: 'https://picsum.photos/seed/netflix/100/100'
           },
           relatedContent: {
@@ -148,7 +148,7 @@ export default function NotificationsPage() {
           actionText: 'Renew Now',
           sender: {
             id: 'system',
-            name: 'Aurora Play',
+            name: 'StreamVault',
             avatar: 'https://picsum.photos/seed/subscription/100/100'
           }
         },
@@ -156,14 +156,14 @@ export default function NotificationsPage() {
           id: 'notif-8',
           type: 'achievement' as const,
           title: 'Gaming Milestone!',
-          message: 'You\'ve completed 50 games in Aurora Gaming! You\'re officially a gaming champion.',
+          message: 'You\'ve completed 50 games in StreamVault Gaming! You\'re officially a gaming champion.',
           timestamp: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
           isRead: true,
           actionUrl: '/gaming/achievements',
           actionText: 'View Badge',
           sender: {
             id: 'system',
-            name: 'Aurora Gaming',
+            name: 'StreamVault Gaming',
             avatar: 'https://picsum.photos/seed/gaming/100/100'
           }
         }

@@ -181,7 +181,7 @@ function PaymentPageContent() {
                 Back to Plans
               </Link>
               <h1 className="text-4xl font-bold text-white mb-2">Complete Your Purchase</h1>
-              <p className="text-gray-300">Secure payment for your Aurora Play subscription</p>
+              <p className="text-gray-300">Secure payment for your StreamVault subscription</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

@@ -237,7 +237,7 @@ export default function ContentSection({
       case 'share':
         navigator.share?.({
           title: item.title,
-          text: `Check out ${item.title} on Aurora Play!`,
+          text: `Check out ${item.title} on StreamVault!`,
           url: window.location.origin + (item.type === 'movie' ? `/movies/${item.id}` : `/series/${item.id}`)
         })
         break

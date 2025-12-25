@@ -107,7 +107,7 @@ export default function ManageSubscriptionPage() {
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-white mb-2">Manage Subscription</h1>
-              <p className="text-gray-300">Control your Aurora Play subscription and billing</p>
+              <p className="text-gray-300">Control your StreamVault subscription and billing</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -256,7 +256,7 @@ export default function Home() {
       action: () => {
         navigator.share?.({
           title: item.title,
-          text: `Check out ${item.title} on Aurora Play!`,
+          text: `Check out ${item.title} on StreamVault!`,
           url: window.location.href
         }) || navigator.clipboard.writeText(window.location.href)
         dispatch(addNotification({

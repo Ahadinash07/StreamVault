@@ -220,7 +220,7 @@ export default function GamingStorePage() {
               <div className="flex items-center justify-center gap-3 mb-6">
                 <FiShoppingCart className="w-12 h-12 text-yellow-400" />
                 <h1 className="text-4xl md:text-6xl font-bold text-white">
-                  Aurora Store
+                  StreamVault Store
                 </h1>
               </div>
 

@@ -70,9 +70,9 @@ const mockTournaments: Tournament[] = [
       'Top 16 advance to elimination rounds'
     ],
     prizes: [
-      { position: 1, reward: 'Aurora Coins', amount: 1000 },
-      { position: 2, reward: 'Aurora Coins', amount: 500 },
-      { position: 3, reward: 'Aurora Coins', amount: 250 },
+      { position: 1, reward: 'StreamVault Coins', amount: 1000 },
+      { position: 2, reward: 'StreamVault Coins', amount: 500 },
+      { position: 3, reward: 'StreamVault Coins', amount: 250 },
       { position: 4, reward: 'Exclusive Badge', amount: 0 }
     ],
     image: 'https://picsum.photos/seed/tournament1/400/200'
@@ -100,9 +100,9 @@ const mockTournaments: Tournament[] = [
       'Final round is head-to-head competition'
     ],
     prizes: [
-      { position: 1, reward: 'Aurora Coins', amount: 5000 },
-      { position: 2, reward: 'Aurora Coins', amount: 2500 },
-      { position: 3, reward: 'Aurora Coins', amount: 1500 },
+      { position: 1, reward: 'StreamVault Coins', amount: 5000 },
+      { position: 2, reward: 'StreamVault Coins', amount: 2500 },
+      { position: 3, reward: 'StreamVault Coins', amount: 1500 },
       { position: 4, reward: 'Premium Subscription', amount: 0 },
       { position: 5, reward: 'Exclusive Avatar', amount: 0 }
     ],
@@ -131,9 +131,9 @@ const mockTournaments: Tournament[] = [
       'Originality is key'
     ],
     prizes: [
-      { position: 1, reward: 'Aurora Coins', amount: 500 },
-      { position: 2, reward: 'Aurora Coins', amount: 300 },
-      { position: 3, reward: 'Aurora Coins', amount: 200 }
+      { position: 1, reward: 'StreamVault Coins', amount: 500 },
+      { position: 2, reward: 'StreamVault Coins', amount: 300 },
+      { position: 3, reward: 'StreamVault Coins', amount: 200 }
     ],
     image: 'https://picsum.photos/seed/tournament3/400/200'
   },
@@ -160,9 +160,9 @@ const mockTournaments: Tournament[] = [
       'Speed and accuracy matter'
     ],
     prizes: [
-      { position: 1, reward: 'Aurora Coins', amount: 200 },
-      { position: 2, reward: 'Aurora Coins', amount: 150 },
-      { position: 3, reward: 'Aurora Coins', amount: 100 }
+      { position: 1, reward: 'StreamVault Coins', amount: 200 },
+      { position: 2, reward: 'StreamVault Coins', amount: 150 },
+      { position: 3, reward: 'StreamVault Coins', amount: 100 }
     ],
     image: 'https://picsum.photos/seed/tournament4/400/200'
   }

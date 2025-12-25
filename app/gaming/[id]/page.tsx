@@ -82,7 +82,7 @@ const mockGames: Game[] = [
     players: '1-4 Players',
     duration: '30-60 min',
     difficulty: 'Medium',
-    developer: 'Aurora Studios',
+    developer: 'StreamVault Studios',
     releaseDate: '2024-12-01',
     image: 'https://picsum.photos/seed/game1/400/300',
     trailer: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',

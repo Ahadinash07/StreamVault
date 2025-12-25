@@ -246,7 +246,7 @@ export default function GamingCommunityPage() {
               </div>
 
               <p className="text-xl md:text-2xl text-gray-300 mb-8">
-                Connect with fellow gamers, share strategies, and discuss everything Aurora Gaming
+                Connect with fellow gamers, share strategies, and discuss everything StreamVault Gaming
               </p>
 
               <div className="flex justify-center gap-8 text-gray-400 mb-8">

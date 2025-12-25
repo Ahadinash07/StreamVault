@@ -87,7 +87,7 @@ const mockArticles: NewsArticle[] = [
     excerpt: 'We\'re excited to announce a complete overhaul of our tournament system with new formats, bigger prizes, and enhanced matchmaking.',
     content: `# New Tournament System Launches Next Week!
 
-We're thrilled to announce that our completely redesigned tournament system will go live next week! This major update brings significant improvements to how you compete and win prizes on Aurora Gaming.
+We're thrilled to announce that our completely redesigned tournament system will go live next week! This major update brings significant improvements to how you compete and win prizes on StreamVault Gaming.
 
 ## What's New
 
@@ -124,10 +124,10 @@ The new system will be available starting January 25th. Make sure to update your
 Stay tuned for more updates and happy gaming! 🎮`,
     author: {
       id: 'author-1',
-      name: 'Aurora Team',
+      name: 'StreamVault Team',
       avatar: 'https://picsum.photos/seed/team/100/100',
       role: 'Game Director',
-      bio: 'Leading game development at Aurora Gaming with 10+ years of experience.'
+      bio: 'Leading game development at StreamVault Gaming with 10+ years of experience.'
     },
     publishedAt: '2024-01-20T10:00:00Z',
     category: 'announcements',
