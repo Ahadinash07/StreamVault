@@ -17,17 +17,17 @@ import { useUpgradePrompt } from './hooks/subscription'
 
 // Initialize store with data
 if (typeof window !== 'undefined') {
-  // Load mock data
-  store.dispatch(setMovies(mockMovies))
-  store.dispatch(setFeaturedMovie(mockMovies[0]))
-  store.dispatch(setTrendingMovies(mockMovies.slice(0, 5)))
-  store.dispatch(setTopRatedMovies(mockMovies.slice().sort((a, b) => b.rating - a.rating).slice(0, 5)))
-  store.dispatch(setNewReleases(mockMovies.slice().sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()).slice(0, 5)))
+  // Load mock data - movies and series are now initialized in slices
+  // store.dispatch(setMovies(mockMovies))
+  // store.dispatch(setFeaturedMovie(mockMovies[0]))
+  // store.dispatch(setTrendingMovies(mockMovies.slice(0, 5)))
+  // store.dispatch(setTopRatedMovies(mockMovies.slice().sort((a, b) => b.rating - a.rating).slice(0, 5)))
+  // store.dispatch(setNewReleases(mockMovies.slice().sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()).slice(0, 5)))
 
-  store.dispatch(setSeries(mockSeries))
-  store.dispatch(setFeaturedSeries(mockSeries[0]))
-  store.dispatch(setTrendingSeries(mockSeries.slice(0, 3)))
-  store.dispatch(setTopRatedSeries(mockSeries.slice().sort((a, b) => b.rating - a.rating).slice(0, 3)))
+  // store.dispatch(setSeries(mockSeries))
+  // store.dispatch(setFeaturedSeries(mockSeries[0]))
+  // store.dispatch(setTrendingSeries(mockSeries.slice(0, 3)))
+  // store.dispatch(setTopRatedSeries(mockSeries.slice().sort((a, b) => b.rating - a.rating).slice(0, 3)))
 
   // Initialize mock notifications with comprehensive data
   const mockNotifications = [

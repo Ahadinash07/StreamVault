@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Movie } from '@/types/content'
+import { mockMovies } from '@/data/mockData'
 
 interface MoviesState {
   movies: Movie[]
@@ -12,11 +13,11 @@ interface MoviesState {
 }
 
 const initialState: MoviesState = {
-  movies: [],
-  featuredMovie: null,
-  trendingMovies: [],
-  topRatedMovies: [],
-  newReleases: [],
+  movies: mockMovies,
+  featuredMovie: mockMovies[0] || null,
+  trendingMovies: mockMovies.slice(0, 5),
+  topRatedMovies: mockMovies.slice().sort((a, b) => b.rating - a.rating).slice(0, 5),
+  newReleases: mockMovies.slice().sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()).slice(0, 5),
   loading: false,
   error: null,
 }

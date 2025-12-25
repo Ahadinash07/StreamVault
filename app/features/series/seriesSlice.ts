@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Series } from '@/types/content'
+import { mockSeries } from '@/data/mockData'
 
 interface SeriesState {
   series: Series[]
@@ -12,11 +13,11 @@ interface SeriesState {
 }
 
 const initialState: SeriesState = {
-  series: [],
-  featuredSeries: null,
-  trendingSeries: [],
-  topRatedSeries: [],
-  newReleases: [],
+  series: mockSeries,
+  featuredSeries: mockSeries[0] || null,
+  trendingSeries: mockSeries.slice(0, 3),
+  topRatedSeries: mockSeries.slice().sort((a, b) => b.rating - a.rating).slice(0, 3),
+  newReleases: mockSeries.slice().sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()).slice(0, 3),
   loading: false,
   error: null,
 }
